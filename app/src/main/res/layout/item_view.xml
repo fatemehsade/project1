@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/item_title"
+        android:layout_margin="8dp"
+        android:hint=" موضوع"
+        android:textSize="20dp"
+        android:layout_toRightOf="@+id/img_circle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/item_date"
+        android:layout_marginLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_title"
+        android:layout_toRightOf="@+id/img_circle"
+        android:textSize="15dp"
+        android:hint="20/9/99" />
+
+    <TextView
+        android:id="@+id/item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_below="@+id/item_date"
+        android:layout_margin="8dp"
+        android:layout_toRightOf="@id/img_circle"
+        android:hint="20:33"
+        android:textSize="15dp" />
+    <EditText
+        android:id="@+id/img_circle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:padding="8dp"
+        android:text="t"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:background="@drawable/circle"/>
+
+</RelativeLayout>
