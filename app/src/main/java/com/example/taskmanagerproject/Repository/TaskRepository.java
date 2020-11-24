@@ -8,18 +8,18 @@ import java.util.UUID;
 
 public class TaskRepository implements Irepository<Task> {
     public static TaskRepository sInstance;
-    private List<Task> mTasks=new ArrayList<>();
-    private List<Task> mTodoTasks=new ArrayList<>();
-    private List<Task> mDoingTasks=new ArrayList<>();
-    private List<Task> mDoneTasks=new ArrayList<>();
+    private List<Task> mTasks = new ArrayList<>();
+    private List<Task> mTodoTasks = new ArrayList<>();
+    private List<Task> mDoingTasks = new ArrayList<>();
+    private List<Task> mDoneTasks = new ArrayList<>();
 
     public static void setInstance(TaskRepository instance) {
         sInstance = instance;
     }
 
     public static TaskRepository getInstance() {
-        if (sInstance==null){
-            sInstance=new TaskRepository();
+        if (sInstance == null) {
+            sInstance = new TaskRepository();
         }
         return sInstance;
     }
@@ -34,8 +34,8 @@ public class TaskRepository implements Irepository<Task> {
 
     }
 
-    public void insert(Task element,String taskState){
-        switch (taskState){
+    public void insert(Task element, String taskState) {
+        switch (taskState) {
             case "TODO":
                 mTodoTasks.add(element);
                 break;
@@ -52,16 +52,17 @@ public class TaskRepository implements Irepository<Task> {
 
     @Override
     public void delete(Task element) {
-        for (int i = 0; i <mTasks.size() ; i++) {
-            if (mTasks.get(i).equals(element)){
+        for (int i = 0; i < mTasks.size(); i++) {
+            if (mTasks.get(i).equals(element)) {
                 mTasks.remove(i);
             }
 
         }
 
     }
-    public void delete(Task element,String taskState){
-        switch (taskState){
+
+    public void delete(Task element, String taskState) {
+        switch (taskState) {
             case "TODO":
                 mTodoTasks.remove(element);
                 break;
@@ -89,7 +90,7 @@ public class TaskRepository implements Irepository<Task> {
 
 
     public List<Task> get(String mTaskState) {
-        switch (mTaskState){
+        switch (mTaskState) {
             case "TODO":
                 return mTodoTasks;
             case "DOING":
@@ -102,10 +103,9 @@ public class TaskRepository implements Irepository<Task> {
     }
 
 
-
     @Override
     public Task getId(UUID element) {
-        for (int i = 0; i <mTasks.size() ; i++) {
+        for (int i = 0; i < mTasks.size(); i++) {
             if (mTasks.get(i).getTaskId().equals(element))
                 return mTasks.get(i);
 
@@ -113,23 +113,69 @@ public class TaskRepository implements Irepository<Task> {
         return null;
     }
 
-    public boolean setBoolean(boolean flag, String taskState) {
-        if (taskState.equals("TODO")) {
-            if (mTodoTasks.size() > 0) {
-                return flag;
-            }
-        } else if (taskState.equals("DOING")) {
-            if (mDoingTasks.size() > 0) {
-                return flag;
-            }
-        } else if (taskState.equals("DONE")) {
+    public boolean setBoolean(String taskState) {
+        switch (taskState) {
+            case "TODO":
+                return mTodoTasks.size() <= 0;
 
-            if (mDoneTasks.size() > 0) {
-                return flag;
-            }
+            case "DOING":
+                return mDoingTasks.size() <= 0;
+            case "DONE":
+
+                return mDoneTasks.size() <= 0;
         }
         return false;
     }
 
 
+    public int getPosition(UUID taskId, String taskState) {
+        switch (taskState) {
+            case "TODO":
+                for (int i = 0; i < mTodoTasks.size(); i++) {
+                    if (mTodoTasks.get(i).getTaskId().equals(taskId)) {
+                        return i;
+                    }
+
+                }
+                break;
+            case "DOING":
+                for (int i = 0; i < mDoingTasks.size(); i++) {
+                    if (mDoingTasks.get(i).getTaskId().equals(taskId)) {
+                        return i;
+                    }
+
+                }
+                break;
+            case "DONE":
+                for (int i = 0; i < mDoneTasks.size(); i++) {
+                    if (mDoneTasks.get(i).getTaskId().equals(taskId)) {
+                        return i;
+                    }
+
+                }
+                break;
+        }
+        return 0;
+
     }
+
+    public void editTask(UUID taskId,String taskState,Task element){
+        switch (taskState) {
+            case "TODO":
+                mTodoTasks.remove(getPosition(taskId, taskState));
+                mTodoTasks.add(getPosition(taskId, taskState), element);
+                break;
+            case "DOING":
+                mDoingTasks.remove(getPosition(taskId, taskState));
+                mDoingTasks.add(getPosition(taskId, taskState), element);
+                break;
+            case "DONE":
+                mDoneTasks.remove(getPosition(taskId, taskState));
+                mDoneTasks.add(getPosition(taskId, taskState), element);
+                break;
+        }
+
+    }
+
+
+}

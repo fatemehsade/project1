@@ -1,9 +1,14 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +23,7 @@ import android.widget.TextView;
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.TaskRepository;
+import com.example.taskmanagerproject.Utils.DateUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -25,13 +31,13 @@ import java.util.List;
 
 
 public class StateFragment extends Fragment {
-    public static final int REQUEST_CODE = 2;
+    public static final int REQUEST_CODE_ADD_DIALOG_FRAGMENT = 0;
+    public static final int REQUEST_CODE_SHOW_DIALOG_FRAGMENT = 3;
     private ImageView mEmpty_paper;
     private FloatingActionButton mAddBtn;
     private RecyclerView mRecyclerView;
     private String mTaskState;
     private TaskRepository mRepository;
-    private List<Task> mTasks;
 
     public static final String ARGS_STATE_TASK = "com.example.taskmanagerproject.stateTask";
 
@@ -62,9 +68,23 @@ public class StateFragment extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_state, container, false);
         findViews(view);
-        setListener();
         initViews();
+        setListener();
+
         return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode!= Activity.RESULT_OK&& data==null)
+            return;
+        if (requestCode==REQUEST_CODE_ADD_DIALOG_FRAGMENT){
+            updateUi();
+        }
+        if (requestCode==REQUEST_CODE_SHOW_DIALOG_FRAGMENT){
+            updateUi();
+        }
     }
 
     private void findViews(View view){
@@ -75,10 +95,12 @@ public class StateFragment extends Fragment {
 
     private void setListener(){
         mAddBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 AddDialogFragment fragment =AddDialogFragment.newInstance(mTaskState);
-                //fragment.show(getActivity().getSupportFragmentManager(),"addDialogFragment");
+                fragment.setTargetFragment(StateFragment.this,
+                        REQUEST_CODE_ADD_DIALOG_FRAGMENT);
                 fragment.show(getActivity().getSupportFragmentManager(),"addDialogFragment");
 
 
@@ -88,7 +110,7 @@ public class StateFragment extends Fragment {
     }
 
     public class TaskAdaptor extends RecyclerView.Adapter<taskViewHolder>{
-        private List<Task> mTaskList;
+        private final List<Task> mTaskList;
 
         public TaskAdaptor(List<Task> taskList) {
             mTaskList = taskList;
@@ -99,17 +121,15 @@ public class StateFragment extends Fragment {
         public taskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view=LayoutInflater.from(getActivity()).inflate(
                     R.layout.item_view,parent,false);
-            taskViewHolder viewHolder=new taskViewHolder(view);
-            return viewHolder;
+            return new taskViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull taskViewHolder holder, int position) {
             Task task=mTaskList.get(position);
             holder.bindTask(task);
-            if (mRepository.setBoolean(true,mTaskState)){
-                mEmpty_paper.setVisibility(View.GONE);
-            }
+
+
 
         }
 
@@ -122,9 +142,11 @@ public class StateFragment extends Fragment {
     }
 
     public class taskViewHolder extends RecyclerView.ViewHolder {
-        private EditText mEditText_imageCircle;
-        private TextView mEditText_date,mEditText_time ,mEditText_Title;
-        private Task mTasks;
+        private final EditText mEditText_imageCircle;
+        private final TextView mEditText_date;
+        private final TextView mEditText_time;
+        private final TextView mEditText_Title;
+        private Task mTask;
 
         public taskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -136,8 +158,10 @@ public class StateFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ShowDialogFragment dialogFragment=ShowDialogFragment.newInstance(mTasks,mTaskState);
-                    //dialogFragment.setTargetFragment(StateFragment.this, REQUEST_CODE);
+                    ShowDialogFragment dialogFragment=
+                            ShowDialogFragment.newInstance(mTask,mTaskState);
+                    dialogFragment.setTargetFragment(StateFragment.this,
+                            REQUEST_CODE_SHOW_DIALOG_FRAGMENT);
                     dialogFragment.show(getActivity().getSupportFragmentManager(),
                             "showDialogFrragment");
                 }
@@ -145,11 +169,17 @@ public class StateFragment extends Fragment {
         }
 
     public void bindTask(Task tasks) {
-        mTasks=tasks;
+        mTask=tasks;
         mEditText_Title.setText(tasks.getTitle());
-        mEditText_date.setText(tasks.getDate().toString());
-        mEditText_time.setText(tasks.getTime().toString());
-        mEditText_imageCircle.setText(tasks.getTitle().substring(0,1));
+        mEditText_date.setText(DateUtils.getCurrentDate(tasks.getDate()));
+        mEditText_time.setText(DateUtils.getCurrentTime(tasks.getTime()));
+        if (tasks.getTitle().equals("")){
+            mEditText_imageCircle.setText("");
+
+        }
+        else {
+            mEditText_imageCircle.setText(tasks.getTitle().substring(0, 1));
+        }
     }
 
 
@@ -157,10 +187,17 @@ public class StateFragment extends Fragment {
 
     private void initViews(){
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mTasks=mRepository.get(mTaskState);
-        TaskAdaptor taskAdaptor=new TaskAdaptor(mTasks);
-        mRecyclerView.setAdapter(taskAdaptor);
-
-        //taskAdaptor.notifyDataSetChanged();
+        updateUi();
     }
+    private void updateUi(){
+        List<Task> tasks = mRepository.get(mTaskState);
+        TaskAdaptor taskAdaptor=new TaskAdaptor(tasks);
+        mRecyclerView.setAdapter(taskAdaptor);
+        mEmpty_paper.setVisibility(View.GONE);
+        if (mRepository.setBoolean(mTaskState)){
+            mEmpty_paper.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 }

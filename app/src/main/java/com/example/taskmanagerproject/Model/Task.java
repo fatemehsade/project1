@@ -1,5 +1,11 @@
 package com.example.taskmanagerproject.Model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.example.taskmanagerproject.Utils.DateUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -12,19 +18,18 @@ public class Task implements Serializable {
     private String mState;
     private UUID mTaskId;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Task() {
         mTaskId = UUID.randomUUID();
-        mDate=new Date();
-        mTime=new Date();
+        mDate= DateUtils.randomDate();
     }
 
-    public Task(String title, String description, Date date, Date time, String state, UUID taskId) {
-        mTitle = title;
-        mDescription = description;
-        mDate = date;
+    public Date getTime() {
+        return mTime;
+    }
+
+    public void setTime(Date time) {
         mTime = time;
-        mState = state;
-        mTaskId = taskId;
     }
 
     public String getTitle() {
@@ -49,14 +54,6 @@ public class Task implements Serializable {
 
     public void setDate(Date date) {
         mDate = date;
-    }
-
-    public Date getTime() {
-        return mTime;
-    }
-
-    public void setTime(Date time) {
-        mTime = time;
     }
 
     public String getState() {
