@@ -36,7 +36,7 @@ public class ShowDialogFragment extends DialogFragment {
     private EditText mEditText_title, mEditText_description,
             mEditText_state;
     private Button mButton_date, mButton_time, mButton_edit,
-            mButton_delete, mButton_save, mButton_cancel;
+            mButton_delete, mButton_cancel;
     private Task mTask;
     private String mTaskState;
     private TaskRepository mRepository;
@@ -104,7 +104,6 @@ public class ShowDialogFragment extends DialogFragment {
         mButton_cancel = view.findViewById(R.id.show_dialog_cancel);
         mButton_date = view.findViewById(R.id.show_dialog_date);
         mButton_time = view.findViewById(R.id.show_dialog_time);
-        mButton_save = view.findViewById(R.id.show_dialog_save);
         mButton_edit = view.findViewById(R.id.show_dialog_edit);
         mButton_delete = view.findViewById(R.id.show_dialog_delete);
     }
@@ -157,13 +156,6 @@ public class ShowDialogFragment extends DialogFragment {
                         REQUEST_CODE_DATE_PICKER_FRAGMENT);
                 datePickerFragment.show(getActivity().getSupportFragmentManager(),
                         TAG_DATE_PICKER_FRAGMENT);
-
-            }
-        });
-        mButton_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
 
             }
         });

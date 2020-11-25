@@ -11,40 +11,41 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:textSize="20dp"
             android:text="Title"/>
         <EditText
-            android:id="@+id/show_dialog_title"
+            android:id="@+id/dialog_title"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="35dp"
             android:textSize="20dp"
             />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:textSize="20dp"
             android:text="Description"/>
         <EditText
-            android:id="@+id/show_dialog_description"
+            android:id="@+id/dialog_description"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="50dp"
             android:textSize="20dp"
             />
-        <EditText
-            android:id="@+id/show_dialog_state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="State"/>
 
         <Button
-            android:id="@+id/show_dialog_date"
-            android:layout_width="match_parent"
+            android:text="Date"
+            android:id="@+id/dialog_date"
+            android:layout_width="200sp"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
             android:layout_height="wrap_content"/>
         <Button
-            android:layout_width="match_parent"
+            android:text="Time"
+            android:layout_width="200sp"
             android:layout_height="wrap_content"
-            android:id="@+id/show_dialog_time"/>
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:id="@+id/dialog_time"/>
     </LinearLayout>
 
     <LinearLayout
@@ -54,34 +55,22 @@
         android:layout_gravity="center"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/show_dialog_cancel"
-            android:layout_width="0dp"
+            android:id="@+id/dialog_cancel"
+            android:layout_width="150dp"
             android:text="Cancel"
             android:textSize="10dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
             android:background="@color/teal_200"
-            android:layout_margin="4dp"
-            android:layout_weight="1"/>
+            />
         <Button
-            android:id="@+id/show_dialog_delete"
-            android:text="delete"
+            android:id="@+id/dialog_save"
+            android:text="Save"
             android:textSize="10dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
             android:layout_margin="4dp"
             android:background="@color/teal_200"/>
-        <Button
-            android:id="@+id/show_dialog_edit"
-            android:text="Edit"
-            android:textSize="10dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:background="@color/teal_200"/>
-
-
     </LinearLayout>
 
 
