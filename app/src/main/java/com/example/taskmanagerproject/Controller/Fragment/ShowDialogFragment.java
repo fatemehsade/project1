@@ -22,6 +22,7 @@ import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class ShowDialogFragment extends DialogFragment {
     public static final String EXTRA_TASK = "com.example.taskmanagerproject.task";
@@ -29,6 +30,7 @@ public class ShowDialogFragment extends DialogFragment {
     public static final String EXTRA_EDIT_TASK = "com.example.taskmanagerproject.editTask";
     public static final int REQUEST_CODE_DATE_PICKER_FRAGMENT = 6;
     public static final int REQUEST_CODE_TIME_PICKER_FRAGMENT = 7;
+    public static final String ARGS_USER_ID = "userId";
     private EditText mEditText_title,mEditText_description,
             mEditText_state;
     private Button mButton_date,mButton_time,mButton_edit,
@@ -39,13 +41,15 @@ public class ShowDialogFragment extends DialogFragment {
     private Task mEditTask;
     private Date userSelectedDate;
     private Date userSelectedTime;
+    private UUID mUserId;
 
 
-    public static ShowDialogFragment newInstance(Task task,String taskState) {
+    public static ShowDialogFragment newInstance(Task task, String taskState, UUID userId) {
 
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_TASK,task);
         args.putString(EXTRA_TASK_STATE,taskState);
+        args.putSerializable(ARGS_USER_ID,userId);
         ShowDialogFragment fragment = new ShowDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -57,6 +61,7 @@ public class ShowDialogFragment extends DialogFragment {
         mTask= (Task) getArguments().getSerializable(EXTRA_TASK);
         mTaskState=getArguments().getString(EXTRA_TASK_STATE);
         mRepository=TaskRepository.getInstance();
+        mUserId= (UUID) getArguments().getSerializable(ARGS_USER_ID);
 
     }
 
@@ -182,6 +187,7 @@ public class ShowDialogFragment extends DialogFragment {
         mEditTask =new Task();
         mEditTask.setTitle(mEditText_title.getText().toString());
         mEditTask.setDescription(mEditText_description.getText().toString());
+        mEditTask.setUserId(mUserId);
         if (DateUtils.getCurrentDate(mButton_date.getText().toString()).equals(mTask.getDate())){
             mEditTask.setDate(mTask.getDate());
         }

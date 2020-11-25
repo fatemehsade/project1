@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.Repository;
 
 import com.example.taskmanagerproject.Model.Task;
+import com.example.taskmanagerproject.Model.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +14,6 @@ public class TaskRepository implements Irepository<Task> {
     private List<Task> mDoingTasks = new ArrayList<>();
     private List<Task> mDoneTasks = new ArrayList<>();
 
-    public static void setInstance(TaskRepository instance) {
-        sInstance = instance;
-    }
 
     public static TaskRepository getInstance() {
         if (sInstance == null) {
@@ -38,6 +36,7 @@ public class TaskRepository implements Irepository<Task> {
         switch (taskState) {
             case "TODO":
                 mTodoTasks.add(element);
+
                 break;
             case "DOING":
                 mDoingTasks.add(element);
@@ -49,6 +48,8 @@ public class TaskRepository implements Irepository<Task> {
 
         }
     }
+
+
 
     @Override
     public void delete(Task element) {
@@ -74,7 +75,7 @@ public class TaskRepository implements Irepository<Task> {
                 break;
 
             default:
-                return;
+                break;
         }
     }
 
@@ -89,16 +90,35 @@ public class TaskRepository implements Irepository<Task> {
     }
 
 
-    public List<Task> get(String mTaskState) {
+    public List<Task> get(String mTaskState,UUID userId) {
         switch (mTaskState) {
             case "TODO":
-                return mTodoTasks;
+                List<Task> newTodoList=new ArrayList<>();
+                cutList(userId, newTodoList, mTodoTasks);
+                return newTodoList;
+                //return mTodoTasks;
             case "DOING":
-                return mDoingTasks;
+                List<Task> newDoingList=new ArrayList<>();
+                cutList(userId, newDoingList, mDoingTasks);
+                return newDoingList;
+               // return mDoingTasks;
             case "DONE":
-                return mDoneTasks;
+                List<Task> newDoneList=new ArrayList<>();
+                cutList(userId, newDoneList, mDoneTasks);
+                return newDoneList;
+                //return mDoneTasks;
             default:
                 return null;
+        }
+    }
+
+    private void cutList(UUID userId, List<Task> newList, List<Task> ListTasks) {
+        for (int i = 0; i < ListTasks.size(); i++) {
+            if (ListTasks.get(i).getUserId().equals(userId)) {
+                newList.add(ListTasks.get(i));
+
+            }
+
         }
     }
 

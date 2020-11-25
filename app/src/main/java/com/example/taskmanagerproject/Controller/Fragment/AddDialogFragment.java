@@ -21,6 +21,7 @@ import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.util.Date;
+import java.util.UUID;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AddDialogFragment extends DialogFragment {
@@ -28,6 +29,7 @@ public class AddDialogFragment extends DialogFragment {
     public static final String EXTRA_TASK = "com.example.taskmanagerproject.Task";
     public static final int REQUEST_CODE_DATE_PICKER_FRAGMENT = 4;
     public static final int REQUEST_CODE_TIME_PICKER_FRAGMENT = 5;
+    public static final String ARGS_USER_ID = "userId";
     private EditText mEditText_title,mEditText_description;
     private Button mButton_time,mButton_date,mButton_save,mButton_cancel;
     private TaskRepository mRepository;
@@ -35,13 +37,15 @@ public class AddDialogFragment extends DialogFragment {
     private String mTaskState;
     private Date userSelectedDate,userSelectedTime;
     private final Date randomDate=DateUtils.randomDate();
+    private UUID mUserId;
 
 
-    public static AddDialogFragment newInstance(String taskState) {
+    public static AddDialogFragment newInstance(String taskState, UUID userId) {
 
         Bundle args = new Bundle();
         AddDialogFragment fragment = new AddDialogFragment();
         args.putString(ARGS_TASK_STATE,taskState);
+        args.putSerializable(ARGS_USER_ID,userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +55,7 @@ public class AddDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mRepository=TaskRepository.getInstance();
         mTaskState=getArguments().getString(ARGS_TASK_STATE);
+        mUserId= (UUID) getArguments().getSerializable(ARGS_USER_ID);
     }
 
 
@@ -113,6 +118,7 @@ public class AddDialogFragment extends DialogFragment {
             mTask.setTime(DateUtils.getCurrentTime(mButton_time.getText().toString()));
         }else {
         mTask.setTime(userSelectedTime);}
+        mTask.setUserId(mUserId);
     }
 
     private void setListener(){

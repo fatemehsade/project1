@@ -17,11 +17,20 @@ public class Task implements Serializable {
     private Date mTime;
     private String mState;
     private UUID mTaskId;
+    private UUID mUserId;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Task() {
         mTaskId = UUID.randomUUID();
         mDate= DateUtils.randomDate();
+    }
+
+    public UUID getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(UUID userId) {
+        mUserId = userId;
     }
 
     public Date getTime() {

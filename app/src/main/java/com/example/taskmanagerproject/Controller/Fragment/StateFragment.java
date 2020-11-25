@@ -28,16 +28,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class StateFragment extends Fragment {
     public static final int REQUEST_CODE_ADD_DIALOG_FRAGMENT = 0;
     public static final int REQUEST_CODE_SHOW_DIALOG_FRAGMENT = 3;
+    public static final String ARGS_USER_ID = "userId";
     private ImageView mEmpty_paper;
     private FloatingActionButton mAddBtn;
     private RecyclerView mRecyclerView;
     private String mTaskState;
     private TaskRepository mRepository;
+    private UUID mUserId;
 
     public static final String ARGS_STATE_TASK = "com.example.taskmanagerproject.stateTask";
 
@@ -45,11 +48,11 @@ public class StateFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static StateFragment newInstance(String stateTask) {
+    public static StateFragment newInstance(String stateTask, UUID userId) {
         StateFragment fragment = new StateFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_STATE_TASK,stateTask);
-
+        args.putSerializable(ARGS_USER_ID,userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +62,7 @@ public class StateFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mTaskState=getArguments().getString(ARGS_STATE_TASK);
         mRepository=TaskRepository.getInstance();
+        mUserId= (UUID) getArguments().getSerializable(ARGS_USER_ID);
 
     }
 
@@ -98,7 +102,7 @@ public class StateFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                AddDialogFragment fragment =AddDialogFragment.newInstance(mTaskState);
+                AddDialogFragment fragment =AddDialogFragment.newInstance(mTaskState,mUserId);
                 fragment.setTargetFragment(StateFragment.this,
                         REQUEST_CODE_ADD_DIALOG_FRAGMENT);
                 fragment.show(getActivity().getSupportFragmentManager(),"addDialogFragment");
@@ -159,7 +163,7 @@ public class StateFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     ShowDialogFragment dialogFragment=
-                            ShowDialogFragment.newInstance(mTask,mTaskState);
+                            ShowDialogFragment.newInstance(mTask,mTaskState,mUserId);
                     dialogFragment.setTargetFragment(StateFragment.this,
                             REQUEST_CODE_SHOW_DIALOG_FRAGMENT);
                     dialogFragment.show(getActivity().getSupportFragmentManager(),
@@ -190,12 +194,18 @@ public class StateFragment extends Fragment {
         updateUi();
     }
     private void updateUi(){
-        List<Task> tasks = mRepository.get(mTaskState);
+        List<Task> tasks = mRepository.get(mTaskState,mUserId);
         TaskAdaptor taskAdaptor=new TaskAdaptor(tasks);
         mRecyclerView.setAdapter(taskAdaptor);
         mEmpty_paper.setVisibility(View.GONE);
-        if (mRepository.setBoolean(mTaskState)){
+       /* if (mRepository.setBoolean(mTaskState)){
             mEmpty_paper.setVisibility(View.VISIBLE);
+        }
+
+        */
+        if (tasks.size()==0){
+            mEmpty_paper.setVisibility(View.VISIBLE);
+
         }
     }
 

@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.taskmanagerproject.Controller.Fragment.StateFragment;
@@ -14,9 +16,21 @@ import com.example.taskmanagerproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_USER_ID = "userId";
     private ViewPager2 mViewPager;
     private TabLayout mTabLayout;
+    private UUID mUserId;
+
+
+    public static Intent newIntent(Context context, UUID userId){
+        Intent intent=new Intent(context,MainActivity.class);
+        intent.putExtra(EXTRA_USER_ID,userId);
+        return intent;
+
+    }
 
 
     @Override
@@ -24,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        taskPagerAdaptor adaptor=new taskPagerAdaptor(this);
+        mUserId= (UUID) getIntent().getSerializableExtra(EXTRA_USER_ID);
+        taskPagerAdaptor adaptor=new taskPagerAdaptor(this,mUserId);
         mViewPager.setAdapter(adaptor);
         new TabLayoutMediator(mTabLayout, mViewPager,
                 (tab, position) ->{
@@ -51,9 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public class taskPagerAdaptor extends FragmentStateAdapter {
+        private UUID mIdUser;
 
-        public taskPagerAdaptor(@NonNull FragmentActivity fragmentActivity) {
+        public taskPagerAdaptor(@NonNull FragmentActivity fragmentActivity,UUID userId) {
             super(fragmentActivity);
+            mIdUser=userId;
         }
 
         @NonNull
@@ -61,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             switch (position){
                 case 0:
-                    return StateFragment.newInstance("TODO");
+                    return StateFragment.newInstance("TODO",mIdUser);
                 case 1:
-                    return StateFragment.newInstance("DOING");
+                    return StateFragment.newInstance("DOING",mIdUser);
                 case 2:
-                    return StateFragment.newInstance("DONE");
+                    return StateFragment.newInstance("DONE",mIdUser);
 
                 default:
                     return null;
