@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.Repository;
 
 import com.example.taskmanagerproject.Model.Task;
-import com.example.taskmanagerproject.Model.user;
 
 import java.util.ArrayList;
 import java.util.List;

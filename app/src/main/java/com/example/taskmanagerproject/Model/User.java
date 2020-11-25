@@ -3,12 +3,12 @@ package com.example.taskmanagerproject.Model;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class user implements Serializable {
+public class User implements Serializable {
     private String mUserName;
     private String mPassWord;
     private UUID mUserId;
 
-    public user() {
+    public User() {
         mUserId=UUID.randomUUID();
     }
 

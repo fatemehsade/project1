@@ -1,19 +1,19 @@
 package com.example.taskmanagerproject.Repository;
 
-import com.example.taskmanagerproject.Model.user;
+import com.example.taskmanagerproject.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class UserRepository implements Irepository<user> {
-    private List<user> mUsers=new ArrayList<>();
+public class UserRepository implements Irepository<User> {
+    private List<User> mUsers=new ArrayList<>();
 
-    public List<user> getUsers() {
+    public List<User> getUsers() {
         return mUsers;
     }
 
-    public void setUsers(List<user> users) {
+    public void setUsers(List<User> users) {
         mUsers = users;
     }
 
@@ -33,29 +33,29 @@ public class UserRepository implements Irepository<user> {
     }
 
     @Override
-    public void insert(user element) {
+    public void insert(User element) {
         mUsers.add(element);
 
     }
 
     @Override
-    public void delete(user element) {
+    public void delete(User element) {
         mUsers.remove(element);
 
     }
 
     @Override
-    public void update(user element) {
+    public void update(User element) {
 
     }
 
     @Override
-    public user get(List<user> elemens) {
+    public User get(List<User> elemens) {
 
 
         return null;
     }
-    public user get(String userName){
+    public User get(String userName){
         for (int i = 0; i <mUsers.size() ; i++) {
             if (mUsers.get(i).getUserName().equals(userName)){
                 return mUsers.get(i);
@@ -67,12 +67,12 @@ public class UserRepository implements Irepository<user> {
 
 
     @Override
-    public user getId(UUID element) {
+    public User getId(UUID element) {
         return null;
     }
 
     public boolean userExist(String userName) {
-            for (user chooseUser : mUsers) {
+            for (User chooseUser : mUsers) {
                 if (chooseUser.getUserName().equals(userName))
                     return true;
 
@@ -81,8 +81,8 @@ public class UserRepository implements Irepository<user> {
         return false;
     }
 
-    public boolean userExist(user element){
-        for (user userExist:mUsers) {
+    public boolean userExist(User element){
+        for (User userExist:mUsers) {
             if (userExist.equals(element))
                 return true;
 

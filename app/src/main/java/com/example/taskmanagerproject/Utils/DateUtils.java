@@ -13,8 +13,8 @@ import java.util.GregorianCalendar;
 public class DateUtils {
     public static final int START_DATE = 1900;
     public static final int END_DATE = 2020;
-    public static final int START_TIME=0;
-    public static final int END_TIME=24;
+    public static final int START_TIME = 0;
+    public static final int END_TIME = 24;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static Date randomDate() {
@@ -22,16 +22,13 @@ public class DateUtils {
 
         GregorianCalendar gc = new GregorianCalendar();
         int year = randBetween(START_DATE, END_DATE);
-        int hour=randBetween(START_TIME,END_TIME);
-        //gc.set(gc.YEAR, year);
-        //int dayOfYear = randBetween(1, gc.getActualMaximum(gc.DAY_OF_YEAR));
-        int Month=randBetween(1,12);
-        int minute=randBetween(1,59);
-        int date=randBetween(1,30);
-        int second=randBetween(1,59);
+        int hour = randBetween(START_TIME, END_TIME);
+        int Month = randBetween(1, 12);
+        int minute = randBetween(1, 59);
+        int date = randBetween(1, 30);
+        int second = randBetween(1, 59);
 
-        //gc.set(gc.DAY_OF_YEAR, dayOfYear);
-        gc.set(year,Month,date,hour,minute,second);
+        gc.set(year, Month, date, hour, minute, second);
 
 
         return gc.getTime();
@@ -58,8 +55,8 @@ public class DateUtils {
         return dateFormat.format(date);
 
 
-
     }
+
     public static Date getCurrentDate(String str) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -70,7 +67,7 @@ public class DateUtils {
         return null;
     }
 
-    public static Date getCurrentTime(String str){
+    public static Date getCurrentTime(String str) {
         SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
         try {
             return format.parse(str);

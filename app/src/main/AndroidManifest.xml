@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskManagerProject">
-        <activity android:name=".Controller.Activity.MainActivity"></activity>
+        <activity android:name=".Controller.Activity.ViewPagerActivity"></activity>
         <activity android:name=".Controller.Activity.SignActivity"/>
         <activity android:name=".Controller.Activity.LoginActivity" >
             <intent-filter>

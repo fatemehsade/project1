@@ -18,20 +18,19 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_USER_ID = "userId";
+public class ViewPagerActivity extends AppCompatActivity {
+    public static final String EXTRA_USER_ID = "com.example.taskmanagerproject.userId";
     private ViewPager2 mViewPager;
     private TabLayout mTabLayout;
     private UUID mUserId;
 
 
     public static Intent newIntent(Context context, UUID userId){
-        Intent intent=new Intent(context,MainActivity.class);
+        Intent intent=new Intent(context, ViewPagerActivity.class);
         intent.putExtra(EXTRA_USER_ID,userId);
         return intent;
 
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public class taskPagerAdaptor extends FragmentStateAdapter {
-        private UUID mIdUser;
+        private final UUID mIdUser;
 
         public taskPagerAdaptor(@NonNull FragmentActivity fragmentActivity,UUID userId) {
             super(fragmentActivity);
@@ -86,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
                 default:
                     return null;
-
             }
-
         }
 
         @Override

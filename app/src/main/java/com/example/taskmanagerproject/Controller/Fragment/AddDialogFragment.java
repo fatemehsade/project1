@@ -30,6 +30,10 @@ public class AddDialogFragment extends DialogFragment {
     public static final int REQUEST_CODE_DATE_PICKER_FRAGMENT = 4;
     public static final int REQUEST_CODE_TIME_PICKER_FRAGMENT = 5;
     public static final String ARGS_USER_ID = "userId";
+    public static final String TAG_DATE_PICKER_FRAGMENT =
+            "com.example.taskmanagerproject.datePickerFragment";
+    public static final String TAG_TIME_PICKER_FRAGMENT =
+            "com.example.taskmanagerproject.timePickerFragment";
     private EditText mEditText_title,mEditText_description;
     private Button mButton_time,mButton_date,mButton_save,mButton_cancel;
     private TaskRepository mRepository;
@@ -151,7 +155,7 @@ public class AddDialogFragment extends DialogFragment {
                 datePickerFragment.setTargetFragment(AddDialogFragment.this,
                         REQUEST_CODE_DATE_PICKER_FRAGMENT);
                 datePickerFragment.show(getActivity().getSupportFragmentManager()
-                        ,"addDialogFragment");
+                        , TAG_DATE_PICKER_FRAGMENT);
             }
         });
 
@@ -162,7 +166,7 @@ public class AddDialogFragment extends DialogFragment {
                 timePickerFragment.setTargetFragment(AddDialogFragment.this,
                         REQUEST_CODE_TIME_PICKER_FRAGMENT);
                 timePickerFragment.show(getActivity().getSupportFragmentManager(),
-                        "timePickerFragment");
+                        TAG_TIME_PICKER_FRAGMENT);
 
             }
         });

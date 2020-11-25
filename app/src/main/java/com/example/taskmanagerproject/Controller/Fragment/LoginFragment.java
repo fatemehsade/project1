@@ -1,10 +1,8 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,24 +12,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.taskmanagerproject.Controller.Activity.MainActivity;
+import com.example.taskmanagerproject.Controller.Activity.ViewPagerActivity;
 import com.example.taskmanagerproject.Controller.Activity.SignActivity;
-import com.example.taskmanagerproject.Model.user;
+import com.example.taskmanagerproject.Model.User;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.UserRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 
 public class LoginFragment extends Fragment {
-    public static final int REQUEST_CODE_SIGN_FRAGMENT = 10;
-    public static final String EXTRA_USER_ID = "userId";
-    private EditText mEditText_password,mEditText_userName ;
-    private Button mButton_Login,mButton_signUp;
+    private EditText mEditText_password, mEditText_userName;
+    private Button mButton_Login, mButton_signUp,mButton_exit,mButton_admin;
     private UserRepository mRepository;
-    private List<user> mUser;
-    private user muser;
+    private List<User> mUser;
+    private User muser;
 
 
     public LoginFragment() {
@@ -49,8 +44,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository=UserRepository.getInstance();
-        mUser=mRepository.getUsers();
+        mRepository = UserRepository.getInstance();
+        mUser = mRepository.getUsers();
 
     }
 
@@ -58,41 +53,43 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
         findViews(view);
         setListener();
         return view;
     }
 
 
-
     private void findViews(View view) {
         mEditText_userName = view.findViewById(R.id.username_login);
-        mEditText_password=view.findViewById(R.id.password_login);
-        mButton_signUp=view.findViewById(R.id.btn_signUp_login);
-        mButton_Login=view.findViewById(R.id.btn_login_login);
+        mEditText_password = view.findViewById(R.id.password_login);
+        mButton_signUp = view.findViewById(R.id.btn_signUp_login);
+        mButton_Login = view.findViewById(R.id.btn_login_login);
+        mButton_exit=view.findViewById(R.id.exit_login);
+        mButton_admin=view.findViewById(R.id.admin_login);
     }
 
-    private void setListener(){
+    private void setListener() {
         mButton_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEditText_userName.getText().toString().equals("")){
+                if (mEditText_userName.getText().toString().equals("")) {
                     toastMethod("pleas enter username");
-                }if (mEditText_password.getText().toString().equals("")){
+                }
+                if (mEditText_password.getText().toString().equals("")) {
                     toastMethod("pleas enter password");
                 }
                 if (!mEditText_userName.getText().toString().equals("") &&
-                        !mEditText_password.getText().toString().equals("")){
-                    for (int i = 0; i <mUser.size() ; i++) {
-                        if (mEditText_userName.getText().toString().equals(mUser.get(i).getUserName())){
+                        !mEditText_password.getText().toString().equals("")) {
+                    for (int i = 0; i < mUser.size(); i++) {
+                        if (mEditText_userName.getText().toString().equals(mUser.get(i).getUserName())) {
                             if (mEditText_password.getText().toString().equals(mUser.get(i).getPassWord())) {
                                 toastMethod("login");
-                                muser=mRepository.get(mEditText_userName.getText().toString());
-                                Intent intent= MainActivity.newIntent(getActivity(),muser.getUserId());
+                                muser = mRepository.get(mEditText_userName.getText().toString());
+                                Intent intent = ViewPagerActivity.newIntent(getActivity(), muser.getUserId());
                                 startActivity(intent);
                                 return;
-                            }else {
+                            } else {
                                 toastMethod("password is wrong");
                             }
                         }
@@ -102,18 +99,54 @@ public class LoginFragment extends Fragment {
                 }
 
 
-
-
             }
+
         });
+
 
         mButton_signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= SignActivity.newIntent(getActivity());
+                Intent intent = SignActivity.newIntent(getActivity());
                 startActivity(intent);
-                Toast.makeText(getActivity(),"signUp",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "signUp", Toast.LENGTH_LONG).show();
 
+
+            }
+        });
+        mButton_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User user=mRepository.get(mEditText_userName.getText().toString());
+                if (mEditText_userName.getText().toString().equals("")&&
+                        mEditText_password.getText().toString().equals("")){
+                    toastMethod(" pleas Enter userName and password");
+                }
+                else if (mEditText_userName.getText().toString().equals("")||
+                        mEditText_password.getText().toString().equals("")){
+                    toastMethod("pleas Enter password or userName");
+                }
+                else if (!mRepository.userExist(mEditText_userName.getText().toString())){
+                    toastMethod("user in not exist ");
+
+                }
+                else if (mRepository.userExist(mEditText_userName.getText().toString())){
+                    if (!user.getPassWord().toString().equals(mEditText_password.getText().toString())){
+                        toastMethod("password is wrong");
+                    }
+                }
+                else if (user.getPassWord().equals(mEditText_password.getText().toString())){
+                    mRepository.delete(user);
+                    mEditText_userName.setText("");
+                    mEditText_password.setText("");
+
+                }
+
+            }
+        });
+        mButton_admin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
