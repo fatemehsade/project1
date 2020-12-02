@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
+import com.example.taskmanagerproject.Repository.TaskDBRepository;
 import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,17 +35,23 @@ import java.util.UUID;
 public class StateFragment extends Fragment {
     public static final int REQUEST_CODE_ADD_DIALOG_FRAGMENT = 0;
     public static final int REQUEST_CODE_SHOW_DIALOG_FRAGMENT = 3;
-    public static final String ARGS_USER_ID = "com.example.taskmanagerproject.userId";
-    public static final String TAG_ADD_DIALOG_FRAGMENT = "addDialogFragment";
-    public static final String TAG_DIALOG_FRAGMENT = "dialogFragment";
+    public static final String ARGS_USER_ID =
+            "com.example.taskmanagerproject.userId";
+    public static final String TAG_ADD_DIALOG_FRAGMENT =
+            "com.example.taskmanagerproject.addDialogFragment";
+    public static final String TAG_DIALOG_FRAGMENT =
+            "com.example.taskmanagerproject.dialogFragment";
+    public static final String ARGS_STATE_TASK =
+            "com.example.taskmanagerproject.stateTask";
+
     private ImageView mEmpty_paper;
     private FloatingActionButton mAddBtn;
     private RecyclerView mRecyclerView;
     private String mTaskState;
-    private TaskRepository mRepository;
+    private TaskDBRepository mRepository;
     private UUID mUserId;
+    private TaskAdaptor mTaskAdaptor;
 
-    public static final String ARGS_STATE_TASK = "com.example.taskmanagerproject.stateTask";
 
     public StateFragment() {
         // Required empty public constructor
@@ -63,7 +70,7 @@ public class StateFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTaskState = getArguments().getString(ARGS_STATE_TASK);
-        mRepository = TaskRepository.getInstance();
+        mRepository = TaskDBRepository.getInstance(getActivity());
         mUserId = (UUID) getArguments().getSerializable(ARGS_USER_ID);
 
     }
@@ -115,7 +122,15 @@ public class StateFragment extends Fragment {
     }
 
     public class TaskAdaptor extends RecyclerView.Adapter<taskViewHolder> {
-        private final List<Task> mTaskList;
+        private List<Task> mTaskList;
+
+        public List<Task> getTaskList() {
+            return mTaskList;
+        }
+
+        public void setTaskList(List<Task> taskList) {
+            mTaskList = taskList;
+        }
 
         public TaskAdaptor(List<Task> taskList) {
             mTaskList = taskList;
@@ -194,10 +209,17 @@ public class StateFragment extends Fragment {
     }
 
     private void updateUi() {
-        List<Task> tasks = mRepository.get(mTaskState, mUserId);
-        TaskAdaptor taskAdaptor = new TaskAdaptor(tasks);
-        mRecyclerView.setAdapter(taskAdaptor);
+        List<Task> tasks = mRepository.getTasks(mUserId, mTaskState);
+
         mEmpty_paper.setVisibility(View.GONE);
+        if (mTaskAdaptor == null) {
+            mTaskAdaptor = new TaskAdaptor(tasks);
+            mRecyclerView.setAdapter(mTaskAdaptor);
+        } else {
+            mTaskAdaptor.setTaskList(tasks);
+            mTaskAdaptor.notifyDataSetChanged();
+        }
+
         if (tasks.size() == 0) {
             mEmpty_paper.setVisibility(View.VISIBLE);
 

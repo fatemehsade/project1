@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,16 +12,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.taskmanagerproject.Controller.Activity.LoginActivity;
+import com.example.taskmanagerproject.Controller.Activity.ViewPagerActivity;
 import com.example.taskmanagerproject.Model.User;
 import com.example.taskmanagerproject.R;
+import com.example.taskmanagerproject.Repository.UserDBRepository;
 import com.example.taskmanagerproject.Repository.UserRepository;
 
 
 public class SignFragment extends Fragment {
     private EditText mEditText_userName, mEditText_password;
     private Button mButton_signUp;
-    private UserRepository mRepository;
-    private User mUser = new User();
+    private UserDBRepository mRepository;
+    private User mUser;
 
 
     public SignFragment() {
@@ -38,7 +42,7 @@ public class SignFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository = UserRepository.getInstance();
+        mRepository = UserDBRepository.getInstance(getActivity());
 
     }
 
@@ -72,10 +76,13 @@ public class SignFragment extends Fragment {
                 } else if (mRepository.userExist(mEditText_userName.getText().toString())) {
                     toastMethod("user name is exist please again enter user name");
                 } else {
+                    mUser = new User();
                     mUser.setUserName(mEditText_userName.getText().toString());
                     mUser.setPassWord(mEditText_password.getText().toString());
-                    mRepository.insert(mUser);
-                    getActivity().finish();//todo
+                    mRepository.insertUser(mUser);
+                    //Intent intent= LoginActivity.newIntent(getActivity());//todo
+                    //startActivity(intent);
+                    getActivity().finish();
 
                 }
             }

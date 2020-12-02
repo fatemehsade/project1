@@ -8,6 +8,12 @@ public class User implements Serializable {
     private String mPassWord;
     private UUID mUserId;
 
+    public User(String userName, String passWord, UUID userId) {
+        mUserName = userName;
+        mPassWord = passWord;
+        mUserId = userId;
+    }
+
     public User() {
         mUserId=UUID.randomUUID();
     }

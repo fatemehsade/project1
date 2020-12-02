@@ -16,17 +16,18 @@ import com.example.taskmanagerproject.Controller.Activity.ViewPagerActivity;
 import com.example.taskmanagerproject.Controller.Activity.SignActivity;
 import com.example.taskmanagerproject.Model.User;
 import com.example.taskmanagerproject.R;
-import com.example.taskmanagerproject.Repository.UserRepository;
+import com.example.taskmanagerproject.Repository.UserDBRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class LoginFragment extends Fragment {
     private EditText mEditText_password, mEditText_userName;
-    private Button mButton_Login, mButton_signUp,mButton_exit,mButton_admin;
-    private UserRepository mRepository;
+    private Button mButton_Login, mButton_signUp, mButton_exit, mButton_admin;
+    private UserDBRepository mRepository;
     private List<User> mUser;
-    private User muser;
+    private User mFindUserId;
 
 
     public LoginFragment() {
@@ -44,7 +45,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository = UserRepository.getInstance();
+        mRepository = UserDBRepository.getInstance(getActivity());
         mUser = mRepository.getUsers();
 
     }
@@ -65,8 +66,8 @@ public class LoginFragment extends Fragment {
         mEditText_password = view.findViewById(R.id.password_login);
         mButton_signUp = view.findViewById(R.id.btn_signUp_login);
         mButton_Login = view.findViewById(R.id.btn_login_login);
-        mButton_exit=view.findViewById(R.id.exit_login);
-        mButton_admin=view.findViewById(R.id.admin_login);
+        mButton_exit = view.findViewById(R.id.exit_login);
+        mButton_admin = view.findViewById(R.id.admin_login);
     }
 
     private void setListener() {
@@ -85,8 +86,10 @@ public class LoginFragment extends Fragment {
                         if (mEditText_userName.getText().toString().equals(mUser.get(i).getUserName())) {
                             if (mEditText_password.getText().toString().equals(mUser.get(i).getPassWord())) {
                                 toastMethod("login");
-                                muser = mRepository.get(mEditText_userName.getText().toString());
-                                Intent intent = ViewPagerActivity.newIntent(getActivity(), muser.getUserId());
+                                mFindUserId = mRepository.returnUserWithUserName(
+                                        mEditText_userName.getText().toString());
+                                Intent intent = ViewPagerActivity.newIntent(
+                                        getActivity(), mFindUserId.getUserId());
                                 startActivity(intent);
                                 return;
                             } else {
@@ -94,7 +97,7 @@ public class LoginFragment extends Fragment {
                             }
                         }
                     }
-                    toastMethod(" first signup");
+                    toastMethod(" first signUp");
 
                 }
 
@@ -117,26 +120,22 @@ public class LoginFragment extends Fragment {
         mButton_exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user=mRepository.get(mEditText_userName.getText().toString());
-                if (mEditText_userName.getText().toString().equals("")&&
-                        mEditText_password.getText().toString().equals("")){
+                User user = mRepository.returnUserWithUserName(mEditText_userName.getText().toString());
+                if (mEditText_userName.getText().toString().equals("") &&
+                        mEditText_password.getText().toString().equals("")) {
                     toastMethod(" pleas Enter userName and password");
-                }
-                else if (mEditText_userName.getText().toString().equals("")||
-                        mEditText_password.getText().toString().equals("")){
+                } else if (mEditText_userName.getText().toString().equals("") ||
+                        mEditText_password.getText().toString().equals("")) {
                     toastMethod("pleas Enter password or userName");
-                }
-                else if (!mRepository.userExist(mEditText_userName.getText().toString())){
+                } else if (!mRepository.userExist(mEditText_userName.getText().toString())) {
                     toastMethod("user in not exist ");
 
-                }
-                else if (mRepository.userExist(mEditText_userName.getText().toString())){
-                    if (!user.getPassWord().toString().equals(mEditText_password.getText().toString())){
+                } else if (mRepository.userExist(mEditText_userName.getText().toString())) {
+                    if (!user.getPassWord().toString().equals(mEditText_password.getText().toString())) {
                         toastMethod("password is wrong");
                     }
-                }
-                else if (user.getPassWord().equals(mEditText_password.getText().toString())){
-                    mRepository.delete(user);
+                } else if (user.getPassWord().equals(mEditText_password.getText().toString())) {
+                    mRepository.deleteUser(user);
                     mEditText_userName.setText("");
                     mEditText_password.setText("");
 

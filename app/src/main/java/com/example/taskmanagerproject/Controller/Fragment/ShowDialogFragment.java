@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
+import com.example.taskmanagerproject.Repository.TaskDBRepository;
 import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 
@@ -39,7 +40,7 @@ public class ShowDialogFragment extends DialogFragment {
             mButton_delete, mButton_cancel;
     private Task mTask;
     private String mTaskState;
-    private TaskRepository mRepository;
+    private TaskDBRepository mRepository;
     private Task mEditTask;
     private Date userSelectedDate;
     private Date userSelectedTime;
@@ -62,7 +63,7 @@ public class ShowDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mTask = (Task) getArguments().getSerializable(EXTRA_TASK);
         mTaskState = getArguments().getString(EXTRA_TASK_STATE);
-        mRepository = TaskRepository.getInstance();
+        mRepository = TaskDBRepository.getInstance(getActivity());
         mUserId = (UUID) getArguments().getSerializable(ARGS_USER_ID);
 
     }
@@ -125,10 +126,11 @@ public class ShowDialogFragment extends DialogFragment {
                 updateUi();
                 mEditTask.setState(mEditText_state.getText().toString());
                 if (!mEditTask.getState().equals(mTaskState)) {
-                    mRepository.delete(mTask, mTaskState);
-                    mRepository.insert(mEditTask, mEditTask.getState());
+                    mRepository.deleteTask(mTask);
+                    mRepository.insertTask(mEditTask);
                 } else {
-                    mRepository.editTask(mEditTask.getTaskId(), mTaskState, mEditTask);
+                    //mRepository.editTask(mTask, mEditTask);
+                    mRepository.updateTask(mEditTask);
 
                 }
                 sentResult();
@@ -162,7 +164,7 @@ public class ShowDialogFragment extends DialogFragment {
         mButton_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRepository.delete(mTask, mTaskState);
+                mRepository.deleteTask(mTask);
                 sentResult();
                 dismiss();
 
@@ -179,9 +181,10 @@ public class ShowDialogFragment extends DialogFragment {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateUi() {
         mEditTask = new Task();
+        mEditTask.setUserId(mTask.getUserId());
+        mEditTask.setTaskId(mTask.getTaskId());
         mEditTask.setTitle(mEditText_title.getText().toString());
         mEditTask.setDescription(mEditText_description.getText().toString());
-        mEditTask.setUserId(mUserId);
         if (DateUtils.getCurrentDate(mButton_date.getText().toString()).equals(mTask.getDate())) {
             mEditTask.setDate(mTask.getDate());
         } else {

@@ -25,6 +25,16 @@ public class Task implements Serializable {
         mDate= DateUtils.randomDate();
     }
 
+    public Task(String title, String description, Date date, Date time, String state, UUID taskId, UUID userId) {
+        mTitle = title;
+        mDescription = description;
+        mDate = date;
+        mTime = time;
+        mState = state;
+        mTaskId = taskId;
+        mUserId = userId;
+    }
+
     public UUID getUserId() {
         return mUserId;
     }
