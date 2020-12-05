@@ -44,21 +44,14 @@ public class TaskDBRepository {
     public Task getTask(UUID taskId) {
         String whereClause = TaskColumns.TASKID + " = ?";
         String[] whereArgs = new String[]{taskId.toString()};
-        Cursor cursor = mDatabase.query(
-                TaskDBSchema.Task.NAME,
-                null,
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null);
-        if (cursor == null || cursor.getCount() == 0)
+        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClause, whereArgs);
+        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
             return null;
         try {
-            cursor.moveToFirst();
-            return extractTaskFromCursor(cursor);
+            taskCursorWrapper.moveToFirst();
+            return new TaskCursorWrapper(taskCursorWrapper).getTask();
         } finally {
-            cursor.close();
+            taskCursorWrapper.close();
         }
 
     }
@@ -67,7 +60,28 @@ public class TaskDBRepository {
         List<Task> tasks = new ArrayList<>();
         String whereClaus = TaskColumns.USERID + " = ? AND " + TaskColumns.STATE + " = ?";
         String[] whereArgs = new String[]{userId.toString(), taskState};
-        Cursor cursor = mDatabase.query(
+        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClaus, whereArgs);
+        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
+            return tasks;
+
+        try {
+            taskCursorWrapper.moveToFirst();
+            while (!taskCursorWrapper.isAfterLast()) {
+
+                Task task = taskCursorWrapper.getTask();
+                taskCursorWrapper.moveToNext();
+                tasks.add(task);
+
+            }
+        } finally {
+            taskCursorWrapper.close();
+        }
+        return tasks;
+
+    }
+
+    private TaskCursorWrapper queryTaskCursorWrapper(String whereClaus, String[] whereArgs) {
+        Cursor cursor= mDatabase.query(
                 TaskDBSchema.Task.NAME,
                 null,
                 whereClaus,
@@ -75,23 +89,7 @@ public class TaskDBRepository {
                 null,
                 null,
                 null);
-
-        if (cursor == null || cursor.getCount() == 0)
-            return tasks;
-
-        try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                Task task = extractTaskFromCursor(cursor);
-                cursor.moveToNext();
-                tasks.add(task);
-
-            }
-        } finally {
-            cursor.close();
-        }
-        return tasks;
-
+        return new TaskCursorWrapper(cursor);
     }
 
 
@@ -147,21 +145,6 @@ public class TaskDBRepository {
 
     }
 
-    private Task extractTaskFromCursor(Cursor cursor) {
-        String title = cursor.getString(cursor.getColumnIndex(TaskColumns.TITLE));
-        String description = cursor.getString(cursor.getColumnIndex(TaskColumns.DESCRIPTION));
-        String state = cursor.getString(cursor.getColumnIndex(TaskColumns.STATE));
-        UUID userId = UUID.fromString(cursor.getString(
-                cursor.getColumnIndex(TaskColumns.USERID)));
-        UUID taskId = UUID.fromString(cursor.getString(
-                cursor.getColumnIndex(TaskColumns.TASKID)));
-        Date date = DateUtils.getCurrentDate(
-                cursor.getString(cursor.getColumnIndex(TaskColumns.DATE)));
-        Date time = DateUtils.getCurrentTime(
-                cursor.getString(cursor.getColumnIndex(TaskColumns.TIME)));
-
-        return new Task(title, description, date, time, state, taskId, userId);
-    }
 
 
 }

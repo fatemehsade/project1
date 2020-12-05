@@ -67,28 +67,21 @@ public class UserDBRepository {
     public User getUserWithId(UUID userId) {
         String whereClaus = UserColumns.USERID + " = ?";
         String[] whereArgs = new String[]{userId.toString()};
-        Cursor cursor = mDatabase.query(
-                TaskDBSchema.User.NAME,
-                null,
-                whereClaus,
-                whereArgs,
-                null,
-                null,
-                null);
+        UserCursorWrapper userCursorWrapper = queryUserCursorWrapper(whereClaus, whereArgs);
 
-        if (cursor == null || cursor.getCount() == 0)
+        if (userCursorWrapper == null || userCursorWrapper.getCount() == 0)
             return null;
 
         try {
-            cursor.moveToFirst();
-            User user = extractUserFromCursor(cursor);
-            return user;
+            userCursorWrapper.moveToFirst();
+            return userCursorWrapper.getUser();
         } finally {
-            cursor.close();
+            userCursorWrapper.close();
         }
 
 
     }
+
 
     public User returnUserWithUserName(String userName) {
         List<User> users = getUsers();
@@ -102,38 +95,23 @@ public class UserDBRepository {
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
-        Cursor cursor = mDatabase.query(
-                TaskDBSchema.User.NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+        UserCursorWrapper userCursorWrapper = queryUserCursorWrapper(null, null);
 
-        if (cursor == null || cursor.getCount() == 0)
+        if (userCursorWrapper == null || userCursorWrapper.getCount() == 0)
             return users;
 
         try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                User user = extractUserFromCursor(cursor);
-                users.add(user);
-                cursor.moveToNext();
+            userCursorWrapper.moveToFirst();
+            while (!userCursorWrapper.isAfterLast()) {
+                users.add(userCursorWrapper.getUser());
+                userCursorWrapper.moveToNext();
             }
         } finally {
-            cursor.close();
+            userCursorWrapper.close();
         }
         return users;
     }
 
-    private User extractUserFromCursor(Cursor cursor) {
-        String userName = cursor.getString(cursor.getColumnIndex(UserColumns.USERNAME));
-        String password = cursor.getString(cursor.getColumnIndex(UserColumns.Password));
-        UUID userId = UUID.fromString(
-                cursor.getString(cursor.getColumnIndex(UserColumns.USERID)));
-        return new User(userName, password, userId);
-    }
 
     public boolean userExist(String userName) {
         List<User> users = getUsers();
@@ -143,5 +121,16 @@ public class UserDBRepository {
 
         }
         return false;
+    }
+    private UserCursorWrapper queryUserCursorWrapper(String whereClaus, String[] whereArgs) {
+        Cursor cursor= mDatabase.query(
+                TaskDBSchema.User.NAME,
+                null,
+                whereClaus,
+                whereArgs,
+                null,
+                null,
+                null);
+        return new UserCursorWrapper(cursor);
     }
 }

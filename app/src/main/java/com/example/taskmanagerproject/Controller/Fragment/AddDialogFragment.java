@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.Repository.TaskDBRepository;
-import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.util.Date;

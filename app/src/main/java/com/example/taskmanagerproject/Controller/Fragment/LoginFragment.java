@@ -82,6 +82,7 @@ public class LoginFragment extends Fragment {
                 }
                 if (!mEditText_userName.getText().toString().equals("") &&
                         !mEditText_password.getText().toString().equals("")) {
+                    mUser=mRepository.getUsers();
                     for (int i = 0; i < mUser.size(); i++) {
                         if (mEditText_userName.getText().toString().equals(mUser.get(i).getUserName())) {
                             if (mEditText_password.getText().toString().equals(mUser.get(i).getPassWord())) {

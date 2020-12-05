@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,29 +8,35 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.TaskDBRepository;
-import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class StateFragment extends Fragment {
     public static final int REQUEST_CODE_ADD_DIALOG_FRAGMENT = 0;
     public static final int REQUEST_CODE_SHOW_DIALOG_FRAGMENT = 3;
@@ -44,6 +49,7 @@ public class StateFragment extends Fragment {
     public static final String ARGS_STATE_TASK =
             "com.example.taskmanagerproject.stateTask";
 
+
     private ImageView mEmpty_paper;
     private FloatingActionButton mAddBtn;
     private RecyclerView mRecyclerView;
@@ -51,6 +57,8 @@ public class StateFragment extends Fragment {
     private TaskDBRepository mRepository;
     private UUID mUserId;
     private TaskAdaptor mTaskAdaptor;
+    private Task inputTask;
+    private Task mTask;
 
 
     public StateFragment() {
@@ -72,6 +80,7 @@ public class StateFragment extends Fragment {
         mTaskState = getArguments().getString(ARGS_STATE_TASK);
         mRepository = TaskDBRepository.getInstance(getActivity());
         mUserId = (UUID) getArguments().getSerializable(ARGS_USER_ID);
+        setHasOptionsMenu(true);
 
     }
 
@@ -96,6 +105,7 @@ public class StateFragment extends Fragment {
             updateUi();
         }
         if (requestCode == REQUEST_CODE_SHOW_DIALOG_FRAGMENT) {
+            inputTask = (Task) data.getSerializableExtra(ShowDialogFragment.EXTRA_EDIT_TASK);
             updateUi();
         }
     }
@@ -119,6 +129,22 @@ public class StateFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.searchview, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+
+
+        }
+        return false;
     }
 
     public class TaskAdaptor extends RecyclerView.Adapter<taskViewHolder> {
@@ -165,7 +191,8 @@ public class StateFragment extends Fragment {
         private final TextView mEditText_date;
         private final TextView mEditText_time;
         private final TextView mEditText_Title;
-        private Task mTask;
+        private final ImageButton mImageView_share;
+
 
         public taskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -173,6 +200,7 @@ public class StateFragment extends Fragment {
             mEditText_date = itemView.findViewById(R.id.item_date);
             mEditText_time = itemView.findViewById(R.id.item_time);
             mEditText_imageCircle = itemView.findViewById(R.id.img_circle);
+            mImageView_share = itemView.findViewById(R.id.share_btn);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -185,6 +213,7 @@ public class StateFragment extends Fragment {
                             TAG_DIALOG_FRAGMENT);
                 }
             });
+
         }
 
         public void bindTask(Task tasks) {
@@ -198,6 +227,24 @@ public class StateFragment extends Fragment {
             } else {
                 mEditText_imageCircle.setText(tasks.getTitle().substring(0, 1));
             }
+
+            setListener();
+        }
+
+        private void setListener() {
+            mImageView_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_STREAM, getDescriptionTask());
+                    Toast.makeText(getActivity(), getDescriptionTask(), Toast.LENGTH_SHORT).show();
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
+                }
+            });
         }
 
 
@@ -226,5 +273,28 @@ public class StateFragment extends Fragment {
         }
     }
 
+    private String getDescriptionTask() {
+        String TaskDescription;
+        if (inputTask != null) {
+            TaskDescription = getString(
+                    R.string.description_Task,
+                    inputTask.getTitle(),
+                    inputTask.getDescription(),
+                    DateUtils.getCurrentDate(inputTask.getDate()),
+                    DateUtils.getCurrentTime(inputTask.getDate()));
+        }
 
+        else {
+            TaskDescription = getString(
+                    R.string.description_Task,
+                    mTask.getTitle(),
+                    mTask.getDescription(),
+                    DateUtils.getCurrentDate(mTask.getDate()),
+                    DateUtils.getCurrentTime(mTask.getTime()));
+
+        }
+        return TaskDescription;
+
+
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,12 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.taskmanagerproject.Controller.Activity.LoginActivity;
-import com.example.taskmanagerproject.Controller.Activity.ViewPagerActivity;
 import com.example.taskmanagerproject.Model.User;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.UserDBRepository;
-import com.example.taskmanagerproject.Repository.UserRepository;
 
 
 public class SignFragment extends Fragment {

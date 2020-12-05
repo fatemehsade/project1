@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.TaskDBRepository;
-import com.example.taskmanagerproject.Repository.TaskRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.util.Date;
@@ -185,12 +184,12 @@ public class ShowDialogFragment extends DialogFragment {
         mEditTask.setTaskId(mTask.getTaskId());
         mEditTask.setTitle(mEditText_title.getText().toString());
         mEditTask.setDescription(mEditText_description.getText().toString());
-        if (DateUtils.getCurrentDate(mButton_date.getText().toString()).equals(mTask.getDate())) {
+        if (mButton_date.getText().toString().equals(DateUtils.getCurrentDate(mTask.getDate()))) {
             mEditTask.setDate(mTask.getDate());
         } else {
             mEditTask.setDate(userSelectedDate);//todo
         }
-        if (DateUtils.getCurrentTime(mButton_time.getText().toString()).equals(mTask.getTime())) {
+        if (mButton_time.getText().toString().equals(DateUtils.getCurrentTime(mTask.getTime()))) {
             mEditTask.setTime(mTask.getTime());
         } else {
             mEditTask.setTime(userSelectedTime);
