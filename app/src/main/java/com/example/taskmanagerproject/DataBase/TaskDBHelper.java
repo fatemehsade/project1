@@ -36,6 +36,8 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         userQuery.append(UserColumns.ID+" INTEGER PRIMARY KEY AUTOINCREMENT,");
         userQuery.append(UserColumns.USERID + " TEXT NOT NULL,");
         userQuery.append(UserColumns.USERNAME +" TEXT,");
+        userQuery.append(UserColumns.DATEINPUT +" TEXT,");
+        userQuery.append(UserColumns.CHOOSE +" INTEGER,");
         userQuery.append(UserColumns.Password+" TEXT");
         userQuery.append(");");
     }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="2dp"
+    android:layout_margin="4dp"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:id="@+id/delete_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/Text_user"
+        android:text="Number User: "
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_toRightOf="@id/delete_admin"
+        android:layout_height="30dp"/>
+
+    <TextView
+        android:id="@+id/UserName_admin_page"
+        android:layout_width="300sp"
+        android:layout_height="30dp"
+        android:layout_toRightOf="@id/Text_user"
+        android:layout_margin="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="userName" />
+    <TextView
+        android:id="@+id/Text_date"
+        android:text="Date : "
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="4dp"
+        android:layout_toRightOf="@id/delete_admin"
+        android:layout_below="@id/UserName_admin_page"/>
+    <TextView
+        android:id="@+id/date_admin_page"
+        android:layout_width="300sp"
+        android:layout_height="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="date"
+        android:layout_margin="4dp"
+        android:layout_toRightOf="@id/Text_date"
+        android:layout_below="@id/UserName_admin_page"/>
+
+    <TextView
+        android:layout_toRightOf="@id/delete_admin"
+        android:id="@+id/Text_numberTask"
+        android:layout_below="@id/Text_date"
+        android:layout_width="wrap_content"
+        android:text="Number task is : "
+        android:layout_margin="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/numberTask_admin_page"
+        android:layout_below="@id/date_admin_page"
+        android:layout_toRightOf="@id/Text_numberTask"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="300sp"
+        android:layout_margin="4dp"
+        android:layout_height="30dp"/>
+
+</RelativeLayout>

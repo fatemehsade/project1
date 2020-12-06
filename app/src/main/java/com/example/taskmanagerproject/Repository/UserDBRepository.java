@@ -9,6 +9,7 @@ import com.example.taskmanagerproject.DataBase.TaskDBHelper;
 import com.example.taskmanagerproject.DataBase.TaskDBSchema;
 import com.example.taskmanagerproject.Model.User;
 import com.example.taskmanagerproject.DataBase.TaskDBSchema.User.UserColumns;
+import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +42,7 @@ public class UserDBRepository {
 
     }
 
-    private ContentValues getContentValues(User user) {
-        ContentValues value = new ContentValues();
-        value.put(UserColumns.USERID, user.getUserId().toString());
-        value.put(UserColumns.USERNAME, user.getUserName());
-        value.put(UserColumns.Password, user.getPassWord());
-        return value;
-    }
+
 
     public void deleteUser(User user) {
         String whereClaus = UserColumns.USERID + " = ?";
@@ -132,5 +127,14 @@ public class UserDBRepository {
                 null,
                 null);
         return new UserCursorWrapper(cursor);
+    }
+    private ContentValues getContentValues(User user) {
+        ContentValues value = new ContentValues();
+        value.put(UserColumns.USERID, user.getUserId().toString());
+        value.put(UserColumns.USERNAME, user.getUserName());
+        value.put(UserColumns.Password, user.getPassWord());
+        value.put(UserColumns.DATEINPUT, DateUtils.getCurrentDate(user.getDateInput()));
+        value.put(UserColumns.CHOOSE,user.isChoose()?1:0);
+        return value;
     }
 }

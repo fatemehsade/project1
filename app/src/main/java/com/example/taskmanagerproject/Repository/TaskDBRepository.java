@@ -79,6 +79,29 @@ public class TaskDBRepository {
         return tasks;
 
     }
+    public List<Task> getTasks(UUID userId) {
+        List<Task> tasks = new ArrayList<>();
+        String whereClaus = TaskColumns.USERID + " = ?";
+        String[] whereArgs = new String[]{userId.toString()};
+        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClaus, whereArgs);
+        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
+            return tasks;
+
+        try {
+            taskCursorWrapper.moveToFirst();
+            while (!taskCursorWrapper.isAfterLast()) {
+
+                Task task = taskCursorWrapper.getTask();
+                taskCursorWrapper.moveToNext();
+                tasks.add(task);
+
+            }
+        } finally {
+            taskCursorWrapper.close();
+        }
+        return tasks;
+
+    }
 
     private TaskCursorWrapper queryTaskCursorWrapper(String whereClaus, String[] whereArgs) {
         Cursor cursor= mDatabase.query(
@@ -106,6 +129,12 @@ public class TaskDBRepository {
         mDatabase.delete(TaskDBSchema.Task.NAME, whereClause, whereArgs);
 
 
+    }
+
+    public void deleteTask(UUID userId){
+        String whereClause = TaskColumns.USERID + " =?";
+        String[] whereArgs = new String[]{userId.toString()};
+        mDatabase.delete(TaskDBSchema.Task.NAME, whereClause, whereArgs);
     }
 
     public void updateTask(Task task) {
@@ -143,6 +172,11 @@ public class TaskDBRepository {
         }
         return -1;
 
+    }
+
+    public int numberOfTaskEveryUser(UUID userId){
+        List<Task> tasks=getTasks(userId);
+        return tasks.size();
     }
 
 

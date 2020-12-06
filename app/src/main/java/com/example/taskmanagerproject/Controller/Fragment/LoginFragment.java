@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.taskmanagerproject.Controller.Activity.AdminActivity;
 import com.example.taskmanagerproject.Controller.Activity.ViewPagerActivity;
 import com.example.taskmanagerproject.Controller.Activity.SignActivity;
 import com.example.taskmanagerproject.Model.User;
@@ -147,6 +148,14 @@ public class LoginFragment extends Fragment {
         mButton_admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!mEditText_userName.getText().toString().equals("admin")){
+                    toastMethod("userName is wrong");
+                }else if (!mEditText_password.getText().toString().equals("admin")){
+                    toastMethod("password is wrong");
+                }else {
+                    Intent intent = AdminActivity.newIntent(getActivity());
+                    startActivity(intent);
+                }
 
             }
         });

@@ -27,6 +27,8 @@ public class TaskDBSchema {
             public static final String USERID="userId";
             public static final String USERNAME="userName";
             public static final String Password="password";
+            public static final String CHOOSE="choose";
+            public static final String DATEINPUT="dateInput";
         }
     }
 }
