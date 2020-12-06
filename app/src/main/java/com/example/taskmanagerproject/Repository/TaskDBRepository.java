@@ -1,29 +1,21 @@
 package com.example.taskmanagerproject.Repository;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
+import androidx.room.Room;
 
-import com.example.taskmanagerproject.DataBase.TaskDBHelper;
-import com.example.taskmanagerproject.DataBase.TaskDBSchema;
+import com.example.taskmanagerproject.DataBase.TaskDao;
+import com.example.taskmanagerproject.DataBase.TaskDataBase;
 import com.example.taskmanagerproject.Model.Task;
-import com.example.taskmanagerproject.DataBase.TaskDBSchema.Task.TaskColumns;
-import com.example.taskmanagerproject.Utils.DateUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class TaskDBRepository {
     public static TaskDBRepository sInstance;
-    private SQLiteDatabase mDatabase;
+    //private SQLiteDatabase mDatabase;
     private Context mContext;
+    private TaskDao mDatabase;
 
     public static TaskDBRepository getInstance(Context context) {
         if (sInstance == null)
@@ -37,129 +29,51 @@ public class TaskDBRepository {
 
     private TaskDBRepository(Context context) {
         mContext = context.getApplicationContext();
-        TaskDBHelper taskDBHelper = new TaskDBHelper(mContext);
-        mDatabase = taskDBHelper.getWritableDatabase();
+        //TaskDBHelper taskDBHelper = new TaskDBHelper(mContext);
+        //mDatabase = taskDBHelper.getWritableDatabase();
+
+        TaskDataBase taskDataBase = Room.databaseBuilder(
+                mContext,
+                TaskDataBase.class,
+                "task.db")
+                .allowMainThreadQueries().build();
+
+        mDatabase = taskDataBase.getTaskDataBase();
     }
 
     public Task getTask(UUID taskId) {
-        String whereClause = TaskColumns.TASKID + " = ?";
-        String[] whereArgs = new String[]{taskId.toString()};
-        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClause, whereArgs);
-        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
-            return null;
-        try {
-            taskCursorWrapper.moveToFirst();
-            return new TaskCursorWrapper(taskCursorWrapper).getTask();
-        } finally {
-            taskCursorWrapper.close();
-        }
+        return mDatabase.getTask(taskId);
 
     }
 
     public List<Task> getTasks(UUID userId, String taskState) {
-        List<Task> tasks = new ArrayList<>();
-        String whereClaus = TaskColumns.USERID + " = ? AND " + TaskColumns.STATE + " = ?";
-        String[] whereArgs = new String[]{userId.toString(), taskState};
-        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClaus, whereArgs);
-        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
-            return tasks;
-
-        try {
-            taskCursorWrapper.moveToFirst();
-            while (!taskCursorWrapper.isAfterLast()) {
-
-                Task task = taskCursorWrapper.getTask();
-                taskCursorWrapper.moveToNext();
-                tasks.add(task);
-
-            }
-        } finally {
-            taskCursorWrapper.close();
-        }
-        return tasks;
+        return mDatabase.getTasks(userId, taskState);
 
     }
+
     public List<Task> getTasks(UUID userId) {
-        List<Task> tasks = new ArrayList<>();
-        String whereClaus = TaskColumns.USERID + " = ?";
-        String[] whereArgs = new String[]{userId.toString()};
-        TaskCursorWrapper taskCursorWrapper = queryTaskCursorWrapper(whereClaus, whereArgs);
-        if (taskCursorWrapper == null || taskCursorWrapper.getCount() == 0)
-            return tasks;
+        return mDatabase.getTasks(userId);
 
-        try {
-            taskCursorWrapper.moveToFirst();
-            while (!taskCursorWrapper.isAfterLast()) {
-
-                Task task = taskCursorWrapper.getTask();
-                taskCursorWrapper.moveToNext();
-                tasks.add(task);
-
-            }
-        } finally {
-            taskCursorWrapper.close();
-        }
-        return tasks;
-
-    }
-
-    private TaskCursorWrapper queryTaskCursorWrapper(String whereClaus, String[] whereArgs) {
-        Cursor cursor= mDatabase.query(
-                TaskDBSchema.Task.NAME,
-                null,
-                whereClaus,
-                whereArgs,
-                null,
-                null,
-                null);
-        return new TaskCursorWrapper(cursor);
     }
 
 
     public void insertTask(Task task) {
-        ContentValues value = getContentValues(task);
-        mDatabase.insert(TaskDBSchema.Task.NAME, null, value);
+        mDatabase.insertTask(task);
 
     }
 
 
     public void deleteTask(Task task) {
-        String whereClause = TaskColumns.TASKID + " =?";
-        String[] whereArgs = new String[]{task.getTaskId().toString()};
-        mDatabase.delete(TaskDBSchema.Task.NAME, whereClause, whereArgs);
-
-
+        mDatabase.deleteTask(task);
     }
 
-    public void deleteTask(UUID userId){
-        String whereClause = TaskColumns.USERID + " =?";
-        String[] whereArgs = new String[]{userId.toString()};
-        mDatabase.delete(TaskDBSchema.Task.NAME, whereClause, whereArgs);
+    public void deleteTask(UUID userId) {
+        mDatabase.deleteTask(userId);
     }
 
     public void updateTask(Task task) {
-        ContentValues value = getContentValues(task);
-        String whereClause = TaskColumns.TASKID + " =?";
-        String[] whereArgs = new String[]{task.getTaskId().toString()};
+        mDatabase.updateTask(task);
 
-        mDatabase.update(
-                TaskDBSchema.Task.NAME,
-                value,
-                whereClause,
-                whereArgs);
-
-    }
-
-    private ContentValues getContentValues(Task task) {
-        ContentValues value = new ContentValues();
-        value.put(TaskColumns.TITLE, task.getTitle());
-        value.put(TaskColumns.DESCRIPTION, task.getDescription());
-        value.put(TaskColumns.STATE, task.getState());
-        value.put(TaskColumns.DATE, DateUtils.getCurrentDate(task.getDate()));
-        value.put(TaskColumns.TIME, DateUtils.getCurrentTime(task.getTime()));
-        value.put(TaskColumns.TASKID, task.getTaskId().toString());
-        value.put(TaskColumns.USERID, task.getUserId().toString());
-        return value;
     }
 
 
@@ -174,11 +88,10 @@ public class TaskDBRepository {
 
     }
 
-    public int numberOfTaskEveryUser(UUID userId){
-        List<Task> tasks=getTasks(userId);
+    public int numberOfTaskEveryUser(UUID userId) {
+        List<Task> tasks = getTasks(userId);
         return tasks.size();
     }
-
 
 
 }

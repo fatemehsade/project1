@@ -3,20 +3,41 @@ package com.example.taskmanagerproject.Model;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.example.taskmanagerproject.Utils.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-
+@Entity(tableName = "taskTable")
 public class Task implements Serializable {
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private Long mId;
+
+    @ColumnInfo(name = "title")
     private String mTitle;
+
+    @ColumnInfo(name = "description")
     private String mDescription;
+
+    @ColumnInfo(name = "date")
     private Date mDate;
+
+    @ColumnInfo(name = "time")
     private Date mTime;
+
+    @ColumnInfo(name = "state")
     private String mState;
+
+    @ColumnInfo(name = "taskIs")
     private UUID mTaskId;
+
+    @ColumnInfo(name = "userId")
     private UUID mUserId;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -33,6 +54,14 @@ public class Task implements Serializable {
         mState = state;
         mTaskId = taskId;
         mUserId = userId;
+    }
+
+    public Long getId() {
+        return mId;
+    }
+
+    public void setId(Long id) {
+        mId = id;
     }
 
     public UUID getUserId() {
