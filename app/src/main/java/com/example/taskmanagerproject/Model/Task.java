@@ -34,11 +34,14 @@ public class Task implements Serializable {
     @ColumnInfo(name = "state")
     private String mState;
 
-    @ColumnInfo(name = "taskIs")
+    @ColumnInfo(name = "taskId")
     private UUID mTaskId;
 
     @ColumnInfo(name = "userId")
     private UUID mUserId;
+
+    @ColumnInfo(name = "imageAddress")
+    private String mImageAddress;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Task() {
@@ -118,5 +121,13 @@ public class Task implements Serializable {
 
     public void setTaskId(UUID taskId) {
         mTaskId = taskId;
+    }
+
+    public String getImageAddress() {
+        return mImageAddress;
+    }
+
+    public void setImageAddress(String imageAddress) {
+        mImageAddress = imageAddress;
     }
 }

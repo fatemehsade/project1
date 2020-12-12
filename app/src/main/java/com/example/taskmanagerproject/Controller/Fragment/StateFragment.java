@@ -1,25 +1,28 @@
 package com.example.taskmanagerproject.Controller.Fragment;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,8 +32,12 @@ import com.example.taskmanagerproject.Model.Task;
 import com.example.taskmanagerproject.R;
 import com.example.taskmanagerproject.Repository.TaskDBRepository;
 import com.example.taskmanagerproject.Utils.DateUtils;
+import com.example.taskmanagerproject.Utils.PictureUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -48,8 +55,10 @@ public class StateFragment extends Fragment {
             "com.example.taskmanagerproject.dialogFragment";
     public static final String ARGS_STATE_TASK =
             "com.example.taskmanagerproject.stateTask";
+    public static final int REQUEST_CODE_IMAGE_CAPTURE = 6;
+    public static final String AUTHORITY = "com.example.taskmanagerprojec.fileProvider";
 
-
+    private ImageView mImageViewTakePhoto;
     private ImageView mEmpty_paper;
     private FloatingActionButton mAddBtn;
     private RecyclerView mRecyclerView;
@@ -59,6 +68,7 @@ public class StateFragment extends Fragment {
     private TaskAdaptor mTaskAdaptor;
     private Task inputTask;
     private Task mTask;
+    private File mPhotoFile;
 
 
     public StateFragment() {
@@ -104,9 +114,14 @@ public class StateFragment extends Fragment {
         if (requestCode == REQUEST_CODE_ADD_DIALOG_FRAGMENT) {
             updateUi();
         }
-        if (requestCode == REQUEST_CODE_SHOW_DIALOG_FRAGMENT) {
+        else if (requestCode == REQUEST_CODE_SHOW_DIALOG_FRAGMENT) {
             inputTask = (Task) data.getSerializableExtra(ShowDialogFragment.EXTRA_EDIT_TASK);
             updateUi();
+        }else if (requestCode==REQUEST_CODE_IMAGE_CAPTURE){
+            Uri photoUri=generateUriForPhotoFile();
+            getActivity().revokeUriPermission(photoUri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
+
         }
     }
 
@@ -187,7 +202,8 @@ public class StateFragment extends Fragment {
     }
 
     public class taskViewHolder extends RecyclerView.ViewHolder {
-        private final EditText mEditText_imageCircle;
+
+        private ImageButton mImageButtonTakePhoto;
         private final TextView mEditText_date;
         private final TextView mEditText_time;
         private final TextView mEditText_Title;
@@ -199,8 +215,9 @@ public class StateFragment extends Fragment {
             mEditText_Title = itemView.findViewById(R.id.item_title);
             mEditText_date = itemView.findViewById(R.id.item_date);
             mEditText_time = itemView.findViewById(R.id.item_time);
-            mEditText_imageCircle = itemView.findViewById(R.id.img_circle);
+            mImageViewTakePhoto = itemView.findViewById(R.id.img_circle);
             mImageView_share = itemView.findViewById(R.id.share_btn);
+            mImageButtonTakePhoto=itemView.findViewById(R.id.ima_btn_take_photo);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -221,12 +238,6 @@ public class StateFragment extends Fragment {
             mEditText_Title.setText(tasks.getTitle());
             mEditText_date.setText(DateUtils.getCurrentDate(tasks.getDate()));
             mEditText_time.setText(DateUtils.getCurrentTime(tasks.getTime()));
-            if (tasks.getTitle().equals("")) {
-                mEditText_imageCircle.setText("");
-
-            } else {
-                mEditText_imageCircle.setText(tasks.getTitle().substring(0, 1));
-            }
 
             setListener();
         }
@@ -245,9 +256,40 @@ public class StateFragment extends Fragment {
                     }
                 }
             });
+
+            mImageButtonTakePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        mPhotoFile = null;
+                        try {
+
+
+                            mPhotoFile = createImageFile();
+                        } catch (IOException ex) {
+                            // Error occurred while creating the File
+                        }
+                        if (mPhotoFile != null) {
+                            Uri photoURI = generateUriForPhotoFile();
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
+                        }
+
+                    }
+
+                }
+            });
         }
 
 
+    }
+
+    private Uri generateUriForPhotoFile() {
+        return FileProvider.getUriForFile(
+                getContext(),
+                AUTHORITY,
+                mPhotoFile);
     }
 
     private void initViews() {
@@ -296,5 +338,29 @@ public class StateFragment extends Fragment {
         return TaskDescription;
 
 
+    }
+    private void updatePhotoView(){
+        if (mPhotoFile==null ||!mPhotoFile.exists())
+            return;
+
+        //Bitmap bitmap=BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath());
+        Bitmap bitmap= PictureUtils.getScaleBitMap(mPhotoFile.getAbsolutePath(),getActivity());
+        mImageViewTakePhoto.setImageBitmap(bitmap);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getFilesDir();
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        String currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }

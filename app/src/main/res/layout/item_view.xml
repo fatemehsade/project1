@@ -35,15 +35,24 @@
         android:layout_toRightOf="@id/img_circle"
         android:hint="20:33"
         android:textSize="15dp" />
-    <EditText
+
+    <ImageView
         android:id="@+id/img_circle"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:padding="8dp"
-        android:text="t"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/circle"
         android:gravity="center"
-        android:textSize="20dp"
-        android:background="@drawable/circle"/>
+        android:padding="8dp" />
+
+    <ImageButton
+        android:id="@+id/ima_btn_take_photo"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_circle"
+        android:src="@drawable/ic_camera"
+        android:padding="8dp"
+        android:layout_toLeftOf="@+id/time_picker_fragment"/>
+
 
     <ImageButton
         android:id="@+id/share_btn"

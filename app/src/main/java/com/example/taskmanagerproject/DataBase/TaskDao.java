@@ -13,7 +13,7 @@ import java.util.UUID;
 @Dao
 public interface TaskDao {
 
-    @Query("SELECT * FROM taskTable WHERE taskIs = :taskId")
+    @Query("SELECT * FROM taskTable WHERE taskId = :taskId")
     Task getTask(UUID taskId);
 
     @Query("SELECT * FROM taskTable WHERE userId = :userId AND state = :taskState")
