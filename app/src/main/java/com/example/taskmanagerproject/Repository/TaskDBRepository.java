@@ -8,13 +8,11 @@ import com.example.taskmanagerproject.DataBase.TaskDao;
 import com.example.taskmanagerproject.DataBase.TaskDataBase;
 import com.example.taskmanagerproject.Model.Task;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
 public class TaskDBRepository {
     public static TaskDBRepository sInstance;
-    //private SQLiteDatabase mDatabase;
     private Context mContext;
     private TaskDao mDatabase;
 
@@ -24,14 +22,9 @@ public class TaskDBRepository {
         return sInstance;
     }
 
-    public static void setInstance(TaskDBRepository instance) {
-        sInstance = instance;
-    }
 
     private TaskDBRepository(Context context) {
         mContext = context.getApplicationContext();
-        //TaskDBHelper taskDBHelper = new TaskDBHelper(mContext);
-        //mDatabase = taskDBHelper.getWritableDatabase();
 
         TaskDataBase taskDataBase = Room.databaseBuilder(
                 mContext,
@@ -68,14 +61,20 @@ public class TaskDBRepository {
         mDatabase.deleteTask(task);
     }
 
-    public void deleteTask(UUID userId) {
-        mDatabase.deleteTask(userId);
+    public void deleteTaskWithUserId(UUID userId) {
+        mDatabase.deleteTaskWithUserId(userId);
     }
 
     public void updateTask(Task task) {
         mDatabase.updateTask(task);
 
     }
+
+
+
+
+
+
 
 
     public int getPositionTask(UUID taskId, String taskState, UUID userId) {

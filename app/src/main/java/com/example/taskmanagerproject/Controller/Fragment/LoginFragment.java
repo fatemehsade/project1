@@ -100,12 +100,8 @@ public class LoginFragment extends Fragment {
                         }
                     }
                     toastMethod(" first signUp");
-
                 }
-
-
             }
-
         });
 
 
@@ -140,9 +136,7 @@ public class LoginFragment extends Fragment {
                     mRepository.deleteUser(user);
                     mEditText_userName.setText("");
                     mEditText_password.setText("");
-
                 }
-
             }
         });
         mButton_admin.setOnClickListener(new View.OnClickListener() {

@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.Model;
 
-import android.provider.ContactsContract;
-import android.widget.CheckBox;
+
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

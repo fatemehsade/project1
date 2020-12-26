@@ -2,7 +2,6 @@ package com.example.taskmanagerproject.Utils;
 
 import android.os.Build;
 
-import androidx.annotation.RequiresApi;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,7 +15,6 @@ public class DateUtils {
     public static final int START_TIME = 0;
     public static final int END_TIME = 24;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static Date randomDate() {
 
 

@@ -12,7 +12,6 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -23,7 +22,6 @@ import com.example.taskmanagerproject.Utils.DateUtils;
 import java.util.Date;
 import java.util.UUID;
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AddDialogFragment extends DialogFragment {
     public static final String ARGS_TASK_STATE = "com.example.taskmanagerproject.taskState";
     public static final String EXTRA_TASK = "com.example.taskmanagerproject.Task";
@@ -40,7 +38,7 @@ public class AddDialogFragment extends DialogFragment {
     private Task mTask;
     private String mTaskState;
     private Date userSelectedDate,userSelectedTime;
-    private final Date randomDate=DateUtils.randomDate();
+    private Date randomDate=DateUtils.randomDate();
     private UUID mUserId;
 
 
@@ -97,7 +95,6 @@ public class AddDialogFragment extends DialogFragment {
         mButton_save=view.findViewById(com.example.taskmanagerproject.R.id.dialog_save);
         mButton_cancel=view.findViewById(com.example.taskmanagerproject.R.id.dialog_cancel);
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initViews(){
         mTask=new Task();
         mTask.setState(mTaskState);
@@ -135,12 +132,10 @@ public class AddDialogFragment extends DialogFragment {
         });
 
         mButton_save.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 initViews();
                 mRepository.insertTask(mTask);
-                //mRepository.setBoolean(mTaskState);
                 sendResult();
                 dismiss();
 
@@ -148,7 +143,6 @@ public class AddDialogFragment extends DialogFragment {
         });
 
         mButton_date.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 DatePickerFragment datePickerFragment=DatePickerFragment.newInstance(randomDate);

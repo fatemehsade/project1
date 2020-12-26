@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    >
+    android:orientation="vertical">
 
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -14,64 +14,93 @@
         android:src="@drawable/ic_login" />
 
 
-
     <EditText
         android:id="@+id/username_login"
         android:layout_width="300dp"
-        android:layout_margin="8dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="username"
-        />
-
+        android:layout_margin="8dp"
+        android:drawableLeft="@drawable/ic_user"
+        android:hint=" username" />
 
 
     <EditText
         android:id="@+id/password_login"
         android:layout_width="300dp"
-        android:layout_margin="8dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="password"
-        />
+        android:layout_margin="8dp"
+        android:drawableLeft="@drawable/ic_pass"
+        android:hint=" password" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/btn_login_login"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="130dp"
             android:layout_height="50dp"
-            android:text="login"
             android:layout_margin="8dp"
-            android:textSize="20sp"/>
+            android:fontFamily="sans-serif-black"
+            android:gravity="right"
+            android:inputType="textFilter"
+            android:text="login"
+            android:textSize="20sp"
+            android:typeface="monospace"
+            android:drawableLeft="@drawable/ic_login_name"
+            app:backgroundTint="#0E514B" />
+
         <Button
             android:id="@+id/btn_signUp_login"
             android:layout_width="130dp"
             android:layout_height="50dp"
             android:layout_margin="8dp"
-            android:text="signUp"
-            android:textSize="20sp"/>
+            android:fontFamily="sans-serif-black"
+            android:gravity="right"
+            android:inputType="textFilter"
+            android:text="signup"
+            android:textSize="18dp"
+            android:typeface="monospace"
+            android:drawableLeft="@drawable/ic_sign"
+            app:backgroundTint="#0E514B" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-    <Button
-        android:id="@+id/exit_login"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:layout_margin="8dp"
-        android:textSize="20sp"
-        android:text="Exit"/>
-    <Button
-        android:id="@+id/admin_login"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:layout_margin="8dp"
-        android:textSize="20sp"
-        android:text="Admin"/>
+
+        <Button
+            android:id="@+id/exit_login"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:fontFamily="sans-serif-black"
+            android:gravity="right"
+            android:inputType="textFilter"
+            android:text="Exit"
+            android:textSize="20sp"
+            android:typeface="monospace"
+            android:drawableLeft="@drawable/ic_exit"
+            app:backgroundTint="#0E514B" />
+
+        <Button
+            android:id="@+id/admin_login"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:fontFamily="sans-serif-black"
+            android:gravity="right"
+            android:inputType="textFilter"
+            android:layerType="software"
+            android:text="Admin"
+            android:textSize="20sp"
+            android:typeface="monospace"
+            android:drawableLeft="@drawable/ic_admin"
+            app:backgroundTint="#0E514B" />
     </LinearLayout>
 
 </LinearLayout>

@@ -52,7 +52,6 @@ public class TimePickerFragment extends DialogFragment {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -80,7 +79,6 @@ public class TimePickerFragment extends DialogFragment {
         mTimePicker = view.findViewById(R.id.time_picker_fragment);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initViews() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mTimeTask);
@@ -91,7 +89,6 @@ public class TimePickerFragment extends DialogFragment {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private Date userSelectedTime() {
         int hour = mTimePicker.getCurrentHour();
         int minute = mTimePicker.getCurrentMinute();

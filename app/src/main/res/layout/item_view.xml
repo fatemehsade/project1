@@ -44,23 +44,25 @@
         android:gravity="center"
         android:padding="8dp" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/ima_btn_take_photo"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_circle"
-        android:src="@drawable/ic_camera"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/time_picker_fragment"
         android:padding="8dp"
-        android:layout_toLeftOf="@+id/time_picker_fragment"/>
+        android:src="@drawable/ic_camera_new" />
 
 
     <ImageButton
         android:id="@+id/share_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_share"
+        android:src="@drawable/ic_share_icon"
         android:layout_alignParentRight="true"
         android:layout_margin="4dp"
         android:layout_below="@id/item_title"/>
+    
 
 </RelativeLayout>

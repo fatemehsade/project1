@@ -1,11 +1,7 @@
 package com.example.taskmanagerproject;
 
-import androidx.room.ColumnInfo;
+
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
-
-import com.example.taskmanagerproject.Utils.DateUtils;
-
 import java.util.Date;
 import java.util.UUID;
 

@@ -76,8 +76,6 @@ public class SignFragment extends Fragment {
                     mUser.setUserName(mEditText_userName.getText().toString());
                     mUser.setPassWord(mEditText_password.getText().toString());
                     mRepository.insertUser(mUser);
-                    //Intent intent= LoginActivity.newIntent(getActivity());//todo
-                    //startActivity(intent);
                     getActivity().finish();
 
                 }

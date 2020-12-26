@@ -16,7 +16,7 @@ public interface TaskDao {
     @Query("SELECT * FROM taskTable WHERE taskId = :taskId")
     Task getTask(UUID taskId);
 
-    @Query("SELECT * FROM taskTable WHERE userId = :userId AND state = :taskState")
+    @Query("SELECT * FROM taskTable WHERE userId = :userId AND taskState = :taskState")
     List<Task> getTasks(UUID userId, String taskState);
 
     @Query("SELECT * FROM taskTable WHERE userId = :userId")
@@ -27,8 +27,11 @@ public interface TaskDao {
 
     @Delete
     void deleteTask(Task task);
-    @Query("DELETE FROM TASKTABLE WHERE userId = :userId ")
-    void deleteTask(UUID userId);
+
+    @Query("DELETE FROM taskTable WHERE userId = :userId ")
+    void deleteTaskWithUserId(UUID userId);
+
     @Update
     void updateTask(Task task);
+
 }

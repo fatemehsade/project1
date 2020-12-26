@@ -78,7 +78,6 @@ public class ShowDialogFragment extends DialogFragment {
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode != Activity.RESULT_OK || data == null)
@@ -118,21 +117,19 @@ public class ShowDialogFragment extends DialogFragment {
 
     private void setListener() {
         mButton_edit.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
 
-                updateUi();
+                editPartOfDialog();
                 mEditTask.setState(mEditText_state.getText().toString());
                 if (!mEditTask.getState().equals(mTaskState)) {
                     mRepository.deleteTask(mTask);
                     mRepository.insertTask(mEditTask);
                 } else {
-                    //mRepository.editTask(mTask, mEditTask);
+                    editPartOfDialog();
                     mRepository.updateTask(mEditTask);
-
                 }
-                sentResult();
+                sendResultToOutherComponent();
                 dismiss();
 
             }
@@ -164,7 +161,7 @@ public class ShowDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 mRepository.deleteTask(mTask);
-                sentResult();
+                sendResultToOutherComponent();
                 dismiss();
 
             }
@@ -177,8 +174,7 @@ public class ShowDialogFragment extends DialogFragment {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void updateUi() {
+    private void editPartOfDialog() {
         mEditTask = new Task();
         mEditTask.setUserId(mTask.getUserId());
         mEditTask.setTaskId(mTask.getTaskId());
@@ -197,7 +193,7 @@ public class ShowDialogFragment extends DialogFragment {
     }
 
 
-    private void sentResult() {
+    private void sendResultToOutherComponent() {
         Fragment fragment = getTargetFragment();
         int requestCode = getTargetRequestCode();
         int resultCode = Activity.RESULT_OK;

@@ -36,9 +36,7 @@ public class AdminFragment extends Fragment {
     private TaskDBRepository mTaskRepository;
     private List<User> mUser;
     private userAdaptor adaptor;
-    private boolean flag=true;
-
-
+    private boolean flag = true;
 
     public AdminFragment() {
         // Required empty public constructor
@@ -54,9 +52,9 @@ public class AdminFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserRepository =UserDBRepository.getInstance(getActivity());
-        mTaskRepository=TaskDBRepository.getInstance(getActivity());
-        mUser= mUserRepository.getUsers();
+        mUserRepository = UserDBRepository.getInstance(getActivity());
+        mTaskRepository = TaskDBRepository.getInstance(getActivity());
+        mUser = mUserRepository.getUsers();
         setHasOptionsMenu(true);
     }
 
@@ -64,28 +62,28 @@ public class AdminFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_admin, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin, container, false);
         findViews(view);
         initViews();
         return view;
     }
 
     private void findViews(View view) {
-        mRecyclerView=view.findViewById(R.id.admin_recycler_view);
+        mRecyclerView = view.findViewById(R.id.admin_recycler_view);
     }
 
-    private void initViews(){
+    private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUi();
     }
 
     private void updateUi() {
-        List<User> users=mUserRepository.getUsers();
+        List<User> users = mUserRepository.getUsers();
 
-        if (adaptor==null) {
+        if (adaptor == null) {
             adaptor = new userAdaptor(mUser);
             mRecyclerView.setAdapter(adaptor);
-        }else {
+        } else {
             adaptor.setUsers(users);
             adaptor.notifyDataSetChanged();
         }
@@ -93,7 +91,7 @@ public class AdminFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.delete_menu,menu);
+        inflater.inflate(R.menu.delete_menu, menu);
     }
 
     @Override
@@ -103,9 +101,9 @@ public class AdminFragment extends Fragment {
                 List<User> users = mUserRepository.getUsers();
                 for (int i = 0; i < users.size(); i++) {
                     if (users.get(i).isChoose()) {
-                        mTaskRepository.deleteTask(users.get(i).getUserId());
+                        mTaskRepository.deleteTaskWithUserId(users.get(i).getUserId());
                         mUserRepository.deleteUser(users.get(i));
-                        flag=false;
+                        flag = false;
                         updateUi();
                         return true;
                     }
@@ -113,14 +111,13 @@ public class AdminFragment extends Fragment {
             }
         }
         Toast.makeText(getActivity(), "you can just delete one user ", Toast.LENGTH_SHORT).show();
-            return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 
 
     }
 
 
-
-    public class userAdaptor extends RecyclerView.Adapter<UserViewHolder>{
+    public class userAdaptor extends RecyclerView.Adapter<UserViewHolder> {
         List<User> mUsers;
 
         public List<User> getUsers() {
@@ -138,14 +135,14 @@ public class AdminFragment extends Fragment {
         @NonNull
         @Override
         public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater=LayoutInflater.from(getActivity());
-            View view=inflater.inflate(R.layout.admin_page_view,parent,false);
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.admin_page_view, parent, false);
             return new UserViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-            User user=mUsers.get(position);
+            User user = mUsers.get(position);
             holder.bindUsers(user);
 
         }
@@ -156,34 +153,34 @@ public class AdminFragment extends Fragment {
         }
     }
 
-    public class UserViewHolder extends RecyclerView.ViewHolder{
+    public class UserViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mUserName,mDate,mNumberOfTask;
+        private TextView mUserName, mDate, mNumberOfTask;
         private CheckBox mCheckBoxDelete;
         private User mUser;
 
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            mUserName=itemView.findViewById(R.id.UserName_admin_page);
-            mNumberOfTask=itemView.findViewById(R.id.numberTask_admin_page);
-            mDate=itemView.findViewById(R.id.date_admin_page);
-            mCheckBoxDelete=itemView.findViewById(R.id.delete_admin);
+            mUserName = itemView.findViewById(R.id.UserName_admin_page);
+            mNumberOfTask = itemView.findViewById(R.id.numberTask_admin_page);
+            mDate = itemView.findViewById(R.id.date_admin_page);
+            mCheckBoxDelete = itemView.findViewById(R.id.delete_admin);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent= ViewPagerActivity.newIntent(getActivity(),mUser.getUserId());
+                    Intent intent = ViewPagerActivity.newIntent(getActivity(), mUser.getUserId());
                     startActivity(intent);
                 }
             });
         }
 
-        public void bindUsers(User user){
-            mUser=user;
+        public void bindUsers(User user) {
+            mUser = user;
             mUserName.setText(user.getUserName());
             mDate.setText(DateUtils.getCurrentDate(user.getDateInput()));
-            String number= String.valueOf(mTaskRepository.numberOfTaskEveryUser(user.getUserId()));
+            String number = String.valueOf(mTaskRepository.numberOfTaskEveryUser(user.getUserId()));
             mNumberOfTask.setText(number);
             mCheckBoxDelete.setChecked(user.isChoose());//what do you do?
             mCheckBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -194,7 +191,5 @@ public class AdminFragment extends Fragment {
                 }
             });
         }
-
-
     }
 }

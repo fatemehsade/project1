@@ -22,9 +22,6 @@ public class UserDBRepository {
         return sInstance;
     }
 
-    public static void setInstance(UserDBRepository instance) {
-        sInstance = instance;
-    }
 
     private UserDBRepository(Context context) {
         mContext = context.getApplicationContext();

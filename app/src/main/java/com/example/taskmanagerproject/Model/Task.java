@@ -2,7 +2,6 @@ package com.example.taskmanagerproject.Model;
 
 import android.os.Build;
 
-import androidx.annotation.RequiresApi;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -31,7 +30,7 @@ public class Task implements Serializable {
     @ColumnInfo(name = "time")
     private Date mTime;
 
-    @ColumnInfo(name = "state")
+    @ColumnInfo(name = "taskState")
     private String mState;
 
     @ColumnInfo(name = "taskId")
@@ -43,7 +42,6 @@ public class Task implements Serializable {
     @ColumnInfo(name = "imageAddress")
     private String mImageAddress;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Task() {
         mTaskId = UUID.randomUUID();
         mDate= DateUtils.randomDate();
